@@ -1,0 +1,449 @@
+/* Responsive Design */
+
+/* Large Screens (1400px and up) */
+@media (min-width: 1400px) {
+    .section-content {
+        max-width: 1400px;
+    }
+    
+    .matrix-container {
+        max-width: 1600px;
+    }
+}
+
+/* Desktop (1200px - 1399px) */
+@media (max-width: 1399px) {
+    .hero-title {
+        font-size: 3rem;
+    }
+    
+.journey-section-title {
+    font-size: 2.8rem;
+}
+}
+
+/* Laptop (992px - 1199px) */
+@media (max-width: 1199px) {
+    .final-cards {
+        grid-template-columns: 1fr;
+        max-width: 600px;
+        margin: 60px auto;
+    }
+    
+    .decision-tree {
+        flex-direction: column;
+        gap: 30px;
+    }
+    
+    .matrix-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+    }
+    
+    .journey-map {
+        gap: 20px;
+    }
+}
+
+/* Tablet (768px - 991px) */
+@media (max-width: 991px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.2rem;
+    }
+    
+.journey-section-title {
+    font-size: 2.5rem;
+}
+    
+    .section-subtitle {
+        font-size: 1.1rem;
+    }
+    
+    .matrix-grid {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 20px;
+    }
+    
+    .matrix-title {
+        font-size: 2rem;
+    }
+    
+    .detail-content {
+        margin: 20px;
+    }
+}
+
+/* Large Mobile (576px - 767px) */
+@media (max-width: 767px) {
+    /* Hide desktop elements */
+    .progress-indicator {
+        display: none;
+    }
+    
+    .map-connector {
+        display: none;
+    }
+    
+    /* Hero adjustments */
+    .hero-section {
+        padding: 30px 15px;
+    }
+    
+    .hero-title {
+        font-size: 2rem;
+        padding: 0 10px;
+    }
+    
+    .hero-subtitle {
+        font-size: 1rem;
+        margin-bottom: 30px;
+    }
+    
+    .journey-map {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .map-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+    
+    .start-journey {
+        padding: 15px 40px;
+        font-size: 1rem;
+    }
+    
+    /* Journey sections */
+    .journey-section {
+        padding: 80px 15px 60px;
+        min-height: auto;
+    }
+    
+    .decision-point {
+        width: 70px;
+        height: 70px;
+        font-size: 1.8rem;
+        top: 20px;
+    }
+    
+    .section-header {
+        margin-bottom: 40px;
+        margin-top: 60px;
+    }
+    
+.journey-section-title {
+    font-size: 2rem;
+    padding: 10px 20px;
+}
+    
+    .section-subtitle {
+        font-size: 1rem;
+        padding: 5px 20px;
+    }
+    
+    .section-date {
+        font-size: 0.9rem;
+        padding: 8px 20px;
+    }
+    
+    /* Option cards */
+    .option-card {
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .option-icon {
+        font-size: 2rem;
+        margin-bottom: 15px;
+    }
+    
+    .option-title {
+        font-size: 1.2rem;
+    }
+    
+    .option-desc {
+        font-size: 0.9rem;
+    }
+    
+    .continue-hint {
+        font-size: 0.8rem;
+        padding: 6px 15px;
+    }
+    
+    /* Result box */
+    .result-box {
+        padding: 20px;
+        margin: 30px 10px;
+    }
+    
+    .result-title {
+        font-size: 1.4rem;
+    }
+    
+    .result-text {
+        font-size: 1rem;
+    }
+    
+    /* Final section */
+    .final-section {
+        padding: 60px 15px;
+    }
+    
+    .final-title {
+        font-size: 2.5rem;
+    }
+    
+    .final-subtitle {
+        font-size: 1.1rem;
+    }
+    
+    .final-card {
+        padding: 30px 20px;
+    }
+    
+    .final-icon {
+        font-size: 3rem;
+    }
+    
+    .final-card-title {
+        font-size: 1.5rem;
+    }
+    
+    /* Matrix */
+    .matrix-overlay {
+        padding: 20px;
+    }
+    
+    .matrix-header {
+        padding: 20px;
+    }
+    
+    .matrix-header-content {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .header-right {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 15px;
+    }
+    
+    .matrix-logo {
+        width: 60px;
+    }
+    
+    .matrix-title {
+        font-size: 1.8rem;
+    }
+    
+    .matrix-subtitle {
+        font-size: 1rem;
+    }
+    
+    .matrix-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        padding: 15px;
+    }
+    
+    .matrix-cell {
+        padding: 15px;
+    }
+    
+    .cell-icon {
+        font-size: 2rem;
+    }
+    
+    .cell-title {
+        font-size: 0.95rem;
+    }
+    
+    .cell-description {
+        font-size: 0.8rem;
+    }
+    
+    /* Detail overlay */
+    .detail-overlay {
+        padding: 20px;
+    }
+    
+    .detail-header {
+        padding: 25px;
+    }
+    
+    .detail-body {
+        padding: 25px;
+    }
+}
+
+/* Small Mobile (up to 575px) */
+@media (max-width: 575px) {
+    .hero-title {
+        font-size: 1.5rem;
+    }
+    
+.journey-section-title {
+    font-size: 1.8rem;
+}
+    
+    .matrix-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .matrix-cell {
+        padding: 20px;
+    }
+    
+    .final-cards {
+        gap: 20px;
+    }
+    
+    .option-card {
+        min-height: auto;
+    }
+    
+    .preferred-badge,
+    .selected-badge {
+        font-size: 0.75rem;
+        padding: 4px 10px;
+    }
+}
+
+/* Extra Small Screens (up to 400px) */
+@media (max-width: 400px) {
+    .hero-title {
+        font-size: 1.4rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 0.9rem;
+    }
+    
+.journey-section-title {
+    font-size: 1.6rem;
+}
+    
+    .start-journey {
+        padding: 12px 30px;
+        font-size: 0.9rem;
+    }
+    
+    .btn-secondary {
+        padding: 12px 25px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Landscape Mobile */
+@media (max-height: 600px) and (orientation: landscape) {
+    .hero-section {
+        min-height: auto;
+        padding: 20px;
+    }
+    
+    .journey-section {
+        min-height: auto;
+        padding: 60px 20px;
+    }
+    
+    .final-section {
+        min-height: auto;
+    }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+    /* Larger touch targets */
+    .progress-dot {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .close-btn {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .btn-primary,
+    .btn-secondary {
+        min-height: 48px;
+    }
+    
+    /* Remove hover effects on touch devices */
+    .option-card:hover {
+        transform: none;
+    }
+    
+    .matrix-cell:hover {
+        transform: none;
+    }
+    
+    .final-card:hover {
+        transform: none;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .progress-indicator,
+    .journey-line,
+    .decorative-bg,
+    .fixed-bg {
+        display: none;
+    }
+    
+    .hero-section,
+    .journey-section,
+    .final-section {
+        page-break-after: always;
+    }
+    
+    .matrix-overlay,
+    .detail-overlay {
+        display: none !important;
+    }
+    
+    body {
+        background: white;
+        color: black;
+    }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+    .option-card,
+    .matrix-cell,
+    .final-card {
+        border-width: 3px;
+    }
+    
+    .btn-primary,
+    .btn-secondary {
+        border: 2px solid currentColor;
+    }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Dark Mode Support (Optional) */
+@media (prefers-color-scheme: dark) {
+    /* Add dark mode styles here if needed */
+}

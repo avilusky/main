@@ -1,0 +1,4229 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>פתרון ארוך טווח לביטוחי הסיעוד</title>
+    
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    
+    <style>
+        /* ============================================ */
+        /* main.css - סגנונות בסיסיים וגלובליים */
+        /* ============================================ */
+        
+        /* CSS Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* CSS Variables */
+        :root {
+            /* צבעים ראשיים */
+            --primary-blue: #2563eb;
+            --secondary-blue: #3b82f6;
+            --light-blue: #60a5fa;
+            --bg-blue: #f0f7ff;
+            
+            /* צבעים משניים */
+            --success-green: #22c55e;
+            --warning-orange: #f97316;
+            --danger-red: #ef4444;
+            --warning-yellow: #fbbf24;
+            
+            /* צבעי טקסט */
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            
+            /* צללים */
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+            --shadow-md: 0 2px 15px rgba(0,0,0,0.06);
+            --shadow-lg: 0 4px 20px rgba(0,0,0,0.08);
+            
+            /* מרווחים */
+            --spacing-xs: 0.25rem;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            
+            /* גדלי גופן */
+            --font-xs: 0.75rem;
+            --font-sm: 0.85rem;
+            --font-md: 1rem;
+            --font-lg: 1.2rem;
+            --font-xl: 1.5rem;
+            --font-2xl: 2rem;
+            --font-3xl: 2.5rem;
+            --font-4xl: 4rem;
+            
+            /* רדיוסים */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-full: 9999px;
+            
+            /* מעברים */
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.3s ease;
+            --transition-slow: 0.5s ease-in-out;
+        }
+        
+        /* Typography */
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: var(--font-md);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: clip;
+            overflow-y: scroll;
+            direction: rtl;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            background: #f0f7ff;
+            width: 100%;
+            min-width: 100vw;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 600;
+            line-height: 1.2;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        h1 { font-size: var(--font-4xl); }
+        h2 { font-size: var(--font-3xl); }
+        h3 { font-size: var(--font-2xl); }
+        h4 { font-size: var(--font-xl); }
+        h5 { font-size: var(--font-lg); }
+        h6 { font-size: var(--font-md); }
+        
+        /* Container */
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            background: #f0f7ff;
+        }
+        
+        /* Base Slide Styles */
+        .slide {
+            width: 100%;
+            min-height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            display: none;
+            transform: translateX(100%);
+            transition: var(--transition-slow);
+            overflow-y: auto;
+            background: #f0f7ff;
+            min-width: 100vw;
+        }
+        
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+            display: block;
+            z-index: 2;
+        }
+        
+        .slide.prev {
+            transform: translateX(-100%);
+            opacity: 0;
+            z-index: 1;
+        }
+        
+        .slide.next {
+            transform: translateX(100%);
+            opacity: 0;
+            z-index: 1;
+        }
+        
+        /* Fixed Logo */
+        .slide-logo {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 80px;
+            display: none;
+            filter: opacity(0.5);
+            z-index: 10;
+            animation: slide_logo_fade 2s ease-out forwards;
+        }
+        
+        /* Common Card Styles */
+        .card {
+            background: white;
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            transition: var(--transition-normal);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        /* Common Button Styles */
+        .btn {
+            padding: var(--spacing-sm) var(--spacing-lg);
+            border: none;
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            transition: var(--transition-normal);
+            font-size: var(--font-sm);
+            font-weight: 500;
+        }
+        
+        .btn-primary {
+            background: var(--primary-blue);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--secondary-blue);
+        }
+        
+        .btn-secondary {
+            background: #f1f5f9;
+            color: var(--text-secondary);
+        }
+        
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+        
+        /* Common Input Styles */
+        .input-range {
+            width: 100%;
+            margin: var(--spacing-sm) 0;
+            -webkit-appearance: none;
+            background: transparent;
+        }
+        
+        .input-range::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(to right, #dbeafe 0%, #93c5fd 100%);
+            border-radius: var(--radius-sm);
+            border: none;
+        }
+        
+        .input-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            cursor: pointer;
+            margin-top: -6px;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition-fast);
+        }
+        
+        .input-range::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+        }
+        
+        /* Utility Classes */
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .text-left { text-align: left; }
+        
+        .mt-1 { margin-top: var(--spacing-sm); }
+        .mt-2 { margin-top: var(--spacing-md); }
+        .mt-3 { margin-top: var(--spacing-lg); }
+        .mt-4 { margin-top: var(--spacing-xl); }
+        
+        .mb-1 { margin-bottom: var(--spacing-sm); }
+        .mb-2 { margin-bottom: var(--spacing-md); }
+        .mb-3 { margin-bottom: var(--spacing-lg); }
+        .mb-4 { margin-bottom: var(--spacing-xl); }
+        
+        .p-1 { padding: var(--spacing-sm); }
+        .p-2 { padding: var(--spacing-md); }
+        .p-3 { padding: var(--spacing-lg); }
+        .p-4 { padding: var(--spacing-xl); }
+        
+        .hidden { display: none; }
+        .block { display: block; }
+        .flex { display: flex; }
+        .grid { display: grid; }
+        
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+/* ============================================ */
+        /* slide1.css - סגנונות שקף הפתיחה */
+        /* ============================================ */
+        
+        #slide1 {
+            background: linear-gradient(135deg, #f0f7ff 0%, #e6f3ff 100%);
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            height: 100vh;
+        }
+        
+        .slide_one_body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Content Wrapper */
+        .slide_one_content_wrapper {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -75%);
+            width: 100%;
+            max-width: 1200px;
+            text-align: center;
+            z-index: 2;
+        }
+        
+        /* Logo Container */
+        .slide_one_logo_container {
+            margin-bottom: 2.5rem;
+            opacity: 0;
+            animation: slide_one_fadeInSlideDown 1s ease-out forwards;
+        }
+        
+        .slide_one_logo {
+            width: 120px !important;
+            height: auto;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+            transform: translateY(-20px);
+            animation: slide_one_float 6s ease-in-out infinite;
+        }
+        
+        /* Text Content */
+        .slide_one_text_content {
+            opacity: 0;
+            animation: slide_one_fadeInSlideUp 1s ease-out forwards;
+            animation-delay: 0.5s;
+            padding: 1rem;
+        }
+        
+        /* Main Title */
+        .slide_one_main_title {
+            font-size: 4rem !important;
+            font-weight: 700;
+            color: #1e40af;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            text-shadow: 0 2px 10px rgba(37, 99, 235, 0.2);
+            position: relative;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slide_one_fadeInSlideUp 1s ease-out forwards;
+        }
+        
+        .slide_one_main_title::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(to right, transparent, #3b82f6, transparent);
+            opacity: 0;
+            animation: slide_one_fadeIn 1.5s ease-out forwards;
+            animation-delay: 1s;
+        }
+        
+        /* Subtitle */
+        .slide_one_subtitle {
+            font-size: 2.2rem !important;
+            color: #1e293b;
+            font-weight: 500;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slide_one_fadeInSlideUp 1s ease-out forwards;
+            animation-delay: 1s;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Decorative Elements */
+        .slide_one_decoration {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            opacity: 0.4;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        
+        .slide_one_decoration_1 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            top: -200px;
+            right: -200px;
+            animation: slide_one_float 10s ease-in-out infinite;
+        }
+        
+        .slide_one_decoration_2 {
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(135deg, #818cf8, #6366f1);
+            bottom: -250px;
+            left: -250px;
+            animation: slide_one_float 12s ease-in-out infinite reverse;
+        }
+        
+        /* ============================================ */
+        /* animations.css - כל האנימציות והמעברים */
+        /* ============================================ */
+        
+        /* Slide Transitions */
+        @keyframes slideInFromRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideInFromLeft {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideOutToRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes slideOutToLeft {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+        }
+        
+        /* Fade Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Scale Animations */
+        @keyframes scaleIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        /* Float Animation */
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(0, 15px); }
+        }
+        
+        @keyframes floatRotate {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(10px, -10px) rotate(5deg); }
+            50% { transform: translate(0, 15px) rotate(0deg); }
+            75% { transform: translate(-10px, -5px) rotate(-5deg); }
+        }
+        
+        /* Logo Animations */
+        @keyframes slide_logo_fade {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        /* Slide 1 Specific Animations */
+        @keyframes slide_one_fadeInSlideDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slide_one_fadeInSlideUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slide_one_fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        
+        @keyframes slide_one_float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(0, 15px); }
+        }
+        
+        /* Loading Animation */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* ============================================ */
+        /* navigation.css - סגנונות ניווט ובקרה */
+        /* ============================================ */
+        
+        /* Navigation Controls Container */
+        .nav-controls {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            pointer-events: none;
+        }
+        
+        /* Navigation Buttons */
+        .nav-button {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: none;
+            width: 50px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition-normal);
+            pointer-events: auto;
+            opacity: 0.3;
+        }
+        
+        .nav-controls:hover .nav-button {
+            opacity: 1;
+            background: rgba(255, 255, 255, 0.6);
+        }
+        
+        /* Previous Button (Right in RTL) */
+        #prevSlide {
+            right: 0;
+            border-radius: 8px 0 0 8px;
+        }
+        
+        /* Next Button (Left in RTL) */
+        #nextSlide {
+            left: 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        /* Arrow Icons */
+        .nav-button:before {
+            content: '';
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            border-top: 2px solid var(--primary-blue);
+            border-right: 2px solid var(--primary-blue);
+            transition: var(--transition-normal);
+        }
+        
+        #prevSlide:before {
+            transform: rotate(45deg);
+            margin-right: 5px;
+        }
+        
+        #nextSlide:before {
+            transform: rotate(-135deg);
+            margin-left: 5px;
+        }
+        
+        /* Hover States */
+        .nav-button:hover {
+            background: rgba(255, 255, 255, 0.9);
+            width: 60px;
+        }
+        
+        .nav-button:hover:before {
+            border-color: var(--secondary-blue);
+        }
+        
+        /* Disabled State */
+        .nav-button:disabled {
+            opacity: 0 !important;
+            cursor: default;
+            pointer-events: none;
+        }
+        
+        /* Slide Indicator */
+        .slide-indicator {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+            color: var(--text-primary);
+            pointer-events: auto;
+            opacity: 0.3;
+            transition: opacity var(--transition-normal);
+            direction: rtl;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+        
+        .nav-controls:hover .slide-indicator {
+            opacity: 1;
+            background: rgba(255, 255, 255, 0.7);
+        }
+/* ============================================ */
+        /* slide2.css - סגנונות שקף המודל */
+        /* ============================================ */
+        
+        .slide3-body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f7ff;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+            padding: 2.5rem 1.5rem 1.5rem 1.5rem;
+        }
+        
+        .slide3-slide {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            width: 100%;
+            max-width: 1400px;
+            padding: 1.75rem;
+            margin: 0 auto;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* Title Section */
+        .slide3-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1.25rem;
+            background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .slide3-title h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(to left, #0284c7, #2563eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        
+        .slide3-title h2 {
+            font-size: 1.1rem;
+            color: #475569;
+            font-weight: 500;
+        }
+        
+        /* Model Stages Grid */
+        .slide3-model-stages {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Stage Cards */
+        .slide3-stage-card {
+            padding: 1.25rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.06);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .slide3-stage-card.slide3-savings {
+            background: linear-gradient(145deg, #ffffff, #f0fdf4);
+            border: 2px solid #22c55e;
+            box-shadow: 0 4px 6px rgba(34, 197, 94, 0.1);
+        }
+        
+        .slide3-stage-card.slide3-insurance {
+            background: linear-gradient(145deg, #ffffff, #f0f7ff);
+            border: 2px solid #3b82f6;
+            box-shadow: 0 4px 6px rgba(59, 130, 246, 0.1);
+        }
+        
+        .slide3-stage-card:hover {
+            transform: translateY(-3px);
+        }
+        
+        .slide3-stage-card h3 {
+            font-size: 1.2rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid;
+        }
+        
+        .slide3-stage-card.slide3-savings h3 {
+            color: #16a34a;
+            border-bottom-color: #22c55e;
+        }
+        
+        .slide3-stage-card.slide3-insurance h3 {
+            color: #2563eb;
+            border-bottom-color: #3b82f6;
+        }
+        
+        /* Feature List */
+        .slide3-feature-list {
+            list-style: none;
+        }
+        
+        .slide3-feature-list li {
+            background: white;
+            margin-bottom: 0.5rem;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .slide3-stage-card.slide3-savings .slide3-feature-list li {
+            border-right: 3px solid #22c55e;
+        }
+        
+        .slide3-stage-card.slide3-insurance .slide3-feature-list li {
+            border-right: 3px solid #3b82f6;
+        }
+        
+        .slide3-feature-list li:hover {
+            transform: translateX(-3px);
+        }
+        
+        .slide3-feature-list strong {
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+        
+        .slide3-stage-card.slide3-savings .slide3-feature-list strong {
+            color: #16a34a;
+        }
+        
+        .slide3-stage-card.slide3-insurance .slide3-feature-list strong {
+            color: #2563eb;
+        }
+        
+        /* Savings Goals Section */
+        .slide3-savings-goals {
+            display: inline-flex;
+            align-items: center;
+            gap: 1.5rem;
+            background: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            margin-right: 0.5rem;
+            vertical-align: middle;
+        }
+        
+        .slide3-savings-goal-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .slide3-savings-goal-item:first-child {
+            position: relative;
+        }
+        
+        .slide3-savings-goal-item:first-child::after {
+            content: "";
+            position: absolute;
+            right: -0.75rem;
+            height: 70%;
+            width: 1px;
+            background: #e2e8f0;
+        }
+        
+        .slide3-savings-goal-label {
+            font-size: 0.9rem;
+            color: #6366f1;
+            font-weight: 500;
+        }
+        
+        .slide3-savings-goal-item.slide3-women .slide3-savings-goal-label {
+            color: #8b5cf6;
+        }
+        
+        .slide3-savings-goal-amount {
+            font-weight: 600;
+            font-size: 0.95rem;
+            background: linear-gradient(to right, #6366f1, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .slide3-savings-goal-item.slide3-women .slide3-savings-goal-amount {
+            background: linear-gradient(to right, #8b5cf6, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        /* Guarantees Section */
+        .slide3-guarantees {
+            background: linear-gradient(145deg, #ffffff, #fffbeb);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-top: 1.5rem;
+            border: 2px solid #fbbf24;
+        }
+        
+        .slide3-guarantees h3 {
+            color: #b45309;
+            font-size: 1.1rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #fbbf24;
+        }
+        
+        .slide3-guarantee-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.75rem;
+        }
+        
+        .slide3-guarantee-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 6px;
+            border: 1px solid #fcd34d;
+            transition: all 0.3s ease;
+        }
+        
+        .slide3-guarantee-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(251, 191, 36, 0.2);
+        }
+        
+        .slide3-guarantee-item h4 {
+            color: #d97706;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .slide3-guarantee-item p {
+            color: #57534e;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+        
+        /* Tooltip Styles */
+        .slide3-tooltip-trigger {
+            position: relative;
+            cursor: help;
+            text-decoration: underline;
+            text-decoration-style: dotted;
+            text-underline-offset: 2px;
+        }
+        
+        .slide3-tooltip-trigger::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            right: 50%;
+            transform: translateX(50%);
+            padding: 0.5rem 1rem;
+            background: rgba(254, 252, 232, 0.98);
+            border: 1px solid #fef08a;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: #854d0e;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+            z-index: 10;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            pointer-events: none;
+        }
+        
+        .slide3-tooltip-trigger:hover::after {
+            opacity: 1;
+            visibility: visible;
+            bottom: calc(100% + 5px);
+        }
+        
+        .slide3-tooltip-trigger.slide3-long::after {
+            white-space: normal;
+            width: max-content;
+            max-width: 200px;
+            text-align: center;
+        }
+        
+        /* Dialog Trigger */
+        .slide3-dialog-trigger {
+            color: #2563eb !important;
+            text-decoration: underline;
+            cursor: pointer;
+            font-weight: 500;
+            transition: color 0.2s ease;
+            display: inline;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+        
+        .slide3-dialog-trigger:hover {
+            color: #1d4ed8 !important;
+            text-decoration: underline;
+        }
+        
+        /* Dialog Styles */
+        .slide3-dialog-overlay {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999 !important;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .slide3-dialog-overlay[style*="display: flex"] {
+            display: flex !important;
+        }
+        
+        .slide3-dialog-content {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 700px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            position: relative;
+            animation: dialogFadeIn 0.3s ease-out;
+            margin: auto;
+        }
+        
+        @keyframes dialogFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        
+        .slide3-dialog-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 1rem;
+            text-align: center;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .slide3-dialog-description {
+            color: #475569;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            text-align: right;
+            direction: rtl;
+        }
+        
+        .slide3-dialog-description ol {
+            margin: 1rem 0;
+            padding-right: 1.5rem;
+        }
+        
+        .slide3-dialog-description li {
+            margin-bottom: 1rem;
+        }
+        
+        .slide3-dialog-chart {
+            height: 350px;
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+        
+        .slide3-dialog-close {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: #ef4444;
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            font-weight: bold;
+            z-index: 1;
+        }
+        
+        .slide3-dialog-close:hover {
+            background: #dc2626;
+            transform: scale(1.1);
+        }
+        
+        /* Premium Table in Dialog */
+        .slide3-premium-table {
+            width: 100%;
+            margin: 1rem 0;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .slide3-premium-table thead {
+            background: linear-gradient(135deg, #e0f2fe, #dbeafe);
+        }
+        
+        .slide3-premium-table th {
+            padding: 0.75rem;
+            text-align: center;
+            color: #1e40af;
+            font-weight: 600;
+            border-bottom: 2px solid #93c5fd;
+        }
+        
+        .slide3-premium-table td {
+            padding: 0.75rem;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .slide3-premium-table tbody tr:hover {
+            background: #f0f9ff;
+        }
+        
+        .slide3-premium-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .example-ribbon {
+            position: absolute;
+            top: 30px;
+            left: -35px;
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            color: #78350f;
+            padding: 8px 45px;
+            font-size: 1rem;
+            font-weight: 600;
+            transform: rotate(-45deg);
+            box-shadow: 0 2px 8px rgba(251, 191, 36, 0.2);
+            z-index: 10;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+        
+        .example-ribbon::before,
+        .example-ribbon::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            background: rgba(251, 191, 36, 0.4);
+        }
+        
+        .example-ribbon::before {
+            top: -3px;
+            left: 0;
+        }
+        
+        .example-ribbon::after {
+            bottom: -3px;
+            left: 0;
+        }
+        
+        /* ============================================ */
+        /* slide3.css - סגנונות מחשבון פרמיות */
+        /* ============================================ */
+        
+        .slide5-body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f7ff;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+            padding: 2.5rem 1.5rem 1.5rem 1.5rem;
+        }
+        
+        .slide5-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            width: 100%;
+            max-width: 1400px;
+            padding: 1.75rem;
+            margin: 0 auto;
+        }
+        
+        .slide5-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1.25rem;
+            background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .slide5-title h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(to left, #0284c7, #2563eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        
+        .slide5-title h2 {
+            font-size: 1.1rem;
+            color: #475569;
+            font-weight: 500;
+        }
+        
+        .slide5-grid {
+            display: grid;
+            grid-template-columns: 35% 65%;
+            gap: 1.5rem;
+            margin: 1.25rem 0;
+        }
+        
+        .slide5-card {
+            background: white;
+            padding: 1.25rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.06);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .slide5-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .slide5-control-group {
+            margin-bottom: 0rem;
+        }
+        
+        .slide5-control-group label {
+            display: block;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            color: #1e293b;
+            font-weight: 500;
+        }
+        
+        .slide5-range {
+            width: 100%;
+            margin: 0.5rem 0;
+            -webkit-appearance: none;
+            background: transparent;
+        }
+        
+        .slide5-range::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(to right, #dbeafe 0%, #93c5fd 100%);
+            border-radius: 4px;
+            border: none;
+        }
+        
+        .slide5-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #2563eb;
+            cursor: pointer;
+            margin-top: -6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.2s ease-in-out;
+        }
+        
+        .slide5-range::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+        }
+        
+        .slide5-age-display {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #2563eb;
+            font-weight: 600;
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border-radius: 8px;
+        }
+        
+        .slide5-gender-buttons {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            width: 100%;
+        }
+        
+        .slide5-gender-button {
+            padding: 0.5rem 1.5rem;
+            border: none;
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            width: 100px;
+            font-weight: 500;
+        }
+        
+        .slide5-gender-button.active {
+            background: #2563eb;
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.25);
+        }
+        
+        .slide5-gender-button:not(.active) {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+        
+        .slide5-gender-button:not(.active):hover {
+            background: #e2e8f0;
+            color: #475569;
+        }
+        
+        .slide5-summary-box {
+            background: #f0f9ff;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            border: 1px solid #bfdbfe;
+        }
+        
+        .slide5-summary-box h3 {
+            color: #2563eb;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .slide5-summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 0.4rem 0;
+            padding: 0.4rem;
+            background: white;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+        
+        .slide5-summary-item:hover {
+            transform: translateX(-2px);
+            box-shadow: 2px 0 4px rgba(37, 99, 235, 0.1);
+        }
+        
+        .slide5-summary-item span:first-child {
+            color: #475569;
+        }
+        
+        .slide5-summary-item span:last-child {
+            font-weight: 600;
+            color: #2563eb;
+        }
+        
+        .slide5-charts-container {
+            display: grid;
+            grid-template-rows: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .slide5-chart-wrapper {
+            position: relative;
+            height: 300px;
+            background: #fafbfc;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+        
+        .slide5-chart-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #1e40af;
+            margin-bottom: 0.75rem;
+            text-align: center;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e0f2fe;
+            background: linear-gradient(135deg, #f0f9ff, #ffffff);
+            padding: 0.5rem;
+            border-radius: 6px 6px 0 0;
+            margin: -1rem -1rem 0.75rem -1rem;
+        }
+        
+        .slide5-note {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #856404;
+            position: relative;
+        }
+        
+        .slide5-note::before {
+            content: "💡";
+            position: absolute;
+            right: -10px;
+            top: -10px;
+            font-size: 1.5rem;
+        }
+        
+        .slide5-note strong {
+            font-weight: 600;
+            color: #7c3f00;
+        }
+        
+        .slide5-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 300px;
+            color: #64748b;
+        }
+        
+        .slide5-loading::after {
+            content: "";
+            width: 40px;
+            height: 40px;
+            border: 3px solid #e2e8f0;
+            border-top-color: #2563eb;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        .slide5-control-group:has(.slide5-gender-buttons) {
+            display: flex;
+            align-items: center;
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        
+        .slide5-control-group:has(.slide5-gender-buttons) label {
+            margin-bottom: 0;
+            position: absolute;
+            right: 0;
+        }
+        
+        @supports not selector(:has(*)) {
+            .slide5-controls .slide5-control-group:nth-child(2) {
+                display: flex;
+                align-items: center;
+                position: relative;
+            }
+            
+            .slide5-controls .slide5-control-group:nth-child(2) label {
+                margin-bottom: 0;
+                position: absolute;
+                right: 0;
+            }
+            
+            .slide5-controls .slide5-control-group:nth-child(2) .slide5-gender-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+/* ============================================ */
+        /* slide4.css - סגנונות ניתוח גירעון */
+        /* ============================================ */
+        
+        .slide6-body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f7ff;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+            padding: 2.5rem 1.5rem 1.5rem 1.5rem;
+        }
+        
+        .slide6-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            width: 100%;
+            max-width: 1400px;
+            padding: 1.75rem;
+            margin: 0 auto;
+        }
+        
+        .slide6-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1.25rem;
+            background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .slide6-title h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(to left, #0284c7, #2563eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        
+        .slide6-title h2 {
+            font-size: 1.1rem;
+            color: #475569;
+            font-weight: 500;
+        }
+        
+        .slide6-grid {
+            display: grid;
+            grid-template-columns: 35% 65%;
+            gap: 1.5rem;
+            margin: 1.25rem 0;
+        }
+        
+        .slide6-card {
+            background: white;
+            padding: 1.25rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.06);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .slide6-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .slide6-control-group {
+            margin-bottom: 1rem;
+        }
+        
+        .slide6-control-group label {
+            display: block;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            color: #1e293b;
+            font-weight: 500;
+        }
+        
+        .slide6-range {
+            width: 100%;
+            margin: 0.5rem 0;
+            -webkit-appearance: none;
+            background: transparent;
+        }
+        
+        .slide6-range::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(to right, #dbeafe 0%, #93c5fd 100%);
+            border-radius: 4px;
+            border: none;
+        }
+        
+        .slide6-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #2563eb;
+            cursor: pointer;
+            margin-top: -6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.2s ease-in-out;
+        }
+        
+.slide6-summary-box {
+    background: linear-gradient(135deg, #fafafa, #f5f5f5);
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 0.0rem;
+    border: 1px solid #e5e5e5;
+}
+        
+        .slide6-summary-box h3 {
+            color: #991b1b;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .slide6-summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 0.4rem 0;
+            padding: 0.4rem;
+            background: white;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        .slide6-summary-item span:last-child {
+            font-weight: 600;
+            color: #dc2626;
+        }
+        
+        .slide6-charts-container {
+            display: grid;
+            grid-template-rows: auto auto;
+            gap: 0.5rem;
+        }
+        
+        .slide6-chart-wrapper {
+            position: relative;
+            background: #fafbfc;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+        
+        .slide6-chart-wrapper:first-child {
+            height: 220px;
+        }
+        
+        .slide6-chart-wrapper:last-child {
+            height: 420px;
+        }
+        
+        .slide6-chart-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #1e40af;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e0f2fe;
+            background: linear-gradient(135deg, #f0f9ff, #ffffff);
+            padding: 0.5rem;
+            border-radius: 6px 6px 0 0;
+            margin: -1rem -1rem 0.5rem -1rem;
+        }
+        
+        .slide6-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+        
+        .slide6-action-card {
+            background: #f8fafc;
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .slide6-action-title {
+            font-weight: 500;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+            color: #1e293b;
+        }
+        
+        .slide6-toggle-button {
+            width: 100%;
+            padding: 0.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            background: #e2e8f0;
+            color: #64748b;
+            font-weight: 500;
+        }
+        
+        .slide6-toggle-button.active {
+            background: #2563eb;
+            color: white;
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+        }
+        
+        .slide6-toggle-button:hover:not(.active) {
+            background: #cbd5e1;
+        }
+        
+        .slide6-slider-container {
+            background: #f8fafc;
+            padding: 0.5rem;
+            border-radius: 8px;
+            margin: 0.75rem 0;
+        }
+        
+        .slide6-slider-group {
+            margin-bottom: 0.4rem;
+        }
+        
+        .slide6-slider-group:last-child {
+            margin-bottom: 0;
+        }
+        
+        .slide6-slider-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .slide6-slider-value {
+            font-weight: 600;
+            color: #2563eb;
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+        }
+        
+        .slide6-calculation-impact {
+            font-size: 0.85rem;
+            height: 1rem;
+            margin-top: 0.5rem;
+            color: #22c55e;
+            font-weight: 500;
+            text-align: right;
+        }
+        
+        .slide6-deficit-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin: 0.25rem 0;
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            background: white;
+            transition: all 0.3s ease;
+        }
+        
+.slide6-deficit-positive {
+    color: #16a34a;
+    border: 1px solid #e5e7eb;  /* מסגרת אפורה בהירה */
+    background: linear-gradient(135deg, #f9fafb, #f0fdf4);  /* רקע כמעט לבן עם רמז ירוק */
+}
+
+.slide6-deficit-negative {
+    color: #dc2626;
+    border: 1px solid #e5e7eb;  /* מסגרת אפורה בהירה */
+    background: linear-gradient(135deg, #f9fafb, #fef2f2);  /* רקע כמעט לבן עם רמז אדום */
+}
+        
+        .slide6-interactive-hint {
+            text-align: center;
+            color: #64748b;
+            font-size: 0.85rem;
+            margin-top: 1rem;
+            font-style: italic;
+        }
+        
+        @keyframes deficit-pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.02);
+            }
+        }
+        
+        .slide6-deficit-value {
+            animation: deficit-pulse 2s ease-in-out infinite;
+        }
+        
+        .slide6-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 300px;
+            color: #64748b;
+        }
+        
+        .slide6-loading::after {
+            content: "";
+            width: 40px;
+            height: 40px;
+            border: 3px solid #e2e8f0;
+            border-top-color: #ef4444;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        .slide6-control-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #1e40af;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e0f2fe;
+            background: linear-gradient(135deg, #f0f9ff, #ffffff);
+            padding: 0.5rem;
+            border-radius: 6px 6px 0 0;
+            margin: -1.25rem -1.25rem 0.5rem -1.25rem;
+        }
+        
+        /* ============================================ */
+        /* responsive.css - עיצוב רספונסיבי לכל גדלי המסך */
+        /* ============================================ */
+        
+        /* Extra Large Screens (1920px+) */
+        @media (min-width: 1920px) {
+            .presentation-container {
+                max-width: 1920px;
+                margin: 0 auto;
+            }
+            
+            :root {
+                --font-4xl: 5rem;
+                --font-3xl: 3rem;
+                --font-2xl: 2.5rem;
+            }
+            
+            .slide-logo {
+                width: 100px;
+            }
+        }
+        
+        /* Large Desktop (1440px - 1919px) */
+        @media (max-width: 1919px) and (min-width: 1440px) {
+            .slide3-slide,
+            .slide5-container,
+            .slide6-container {
+                max-width: 1400px;
+            }
+        }
+        
+        /* Desktop (1200px - 1439px) */
+        @media (max-width: 1439px) and (min-width: 1200px) {
+            .slide3-slide,
+            .slide5-container,
+            .slide6-container {
+                max-width: 1200px;
+            }
+            
+            :root {
+                --font-4xl: 3.5rem;
+                --font-3xl: 2.5rem;
+            }
+        }
+        
+        /* Small Desktop (1024px - 1199px) */
+        @media (max-width: 1199px) and (min-width: 1024px) {
+            .slide5-grid,
+            .slide6-grid {
+                grid-template-columns: 40% 60%;
+                gap: 1.25rem;
+            }
+            
+            .slide_one_main_title {
+                font-size: 3.5rem;
+            }
+            
+            .slide_one_subtitle {
+                font-size: 2rem;
+            }
+        }
+        
+        /* Tablet Landscape (768px - 1023px) */
+        @media (max-width: 1023px) and (min-width: 768px) {
+            .nav-button {
+                width: 45px;
+                height: 70px;
+            }
+            
+            .slide3-model-stages {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .slide5-grid,
+            .slide6-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .slide5-chart-wrapper,
+            .slide6-chart-wrapper {
+                height: 280px;
+            }
+            
+            .slide3-title h1,
+            .slide5-title h1,
+            .slide6-title h1 {
+                font-size: 1.75rem;
+            }
+            
+            .slide_one_main_title {
+                font-size: 3rem;
+            }
+            
+            .slide_one_subtitle {
+                font-size: 1.75rem;
+            }
+        }
+        
+        /* Tablet Portrait (600px - 767px) */
+        @media (max-width: 767px) and (min-width: 600px) {
+            body {
+                font-size: 15px;
+            }
+            
+            .slide3-slide,
+            .slide5-container,
+            .slide6-container {
+                padding: 1.25rem;
+            }
+            
+            .nav-button {
+                width: 42px;
+                height: 65px;
+                opacity: 0.7;
+            }
+            
+            .slide-indicator {
+                font-size: 13px;
+                padding: 7px 18px;
+            }
+            
+            .slide_one_main_title {
+                font-size: 2.5rem;
+            }
+            
+            .slide_one_subtitle {
+                font-size: 1.5rem;
+            }
+            
+            .slide_one_logo {
+                width: 100px;
+            }
+            
+            .slide5-chart-wrapper,
+            .slide6-chart-wrapper {
+                height: 260px;
+            }
+        }
+        
+        /* Large Mobile (480px - 599px) */
+        @media (max-width: 599px) and (min-width: 480px) {
+            body {
+                font-size: 14px;
+            }
+            
+            .slide3-slide,
+            .slide5-container,
+            .slide6-container {
+                padding: 1rem;
+                border-radius: 12px;
+            }
+            
+            .nav-button {
+                width: 40px;
+                height: 60px;
+                opacity: 0.75;
+            }
+            
+            .nav-button:hover {
+                width: 42px;
+            }
+            
+            .slide-indicator {
+                font-size: 12px;
+                padding: 6px 15px;
+                bottom: 15px;
+            }
+            
+            .slide_one_main_title {
+                font-size: 2rem !important;
+                padding: 0 1rem;
+            }
+            
+            .slide_one_subtitle {
+                font-size: 1.25rem !important;
+                padding: 0 1rem;
+            }
+            
+            .slide_one_logo {
+                width: 85px !important;
+            }
+            
+            .slide_one_decoration_1,
+            .slide_one_decoration_2 {
+                width: 250px;
+                height: 250px;
+                filter: blur(60px);
+            }
+            
+            .slide3-title h1,
+            .slide5-title h1,
+            .slide6-title h1 {
+                font-size: 1.4rem;
+            }
+            
+            .slide3-title h2,
+            .slide5-title h2,
+            .slide6-title h2 {
+                font-size: 0.95rem;
+            }
+            
+            .slide3-stage-card,
+            .slide5-card,
+            .slide6-card {
+                padding: 0.9rem;
+            }
+            
+            .slide5-chart-wrapper,
+            .slide6-chart-wrapper {
+                height: 240px;
+                padding: 0.75rem;
+            }
+            
+            .slide5-gender-button {
+                width: 85px;
+                padding: 0.4rem 0.8rem;
+                font-size: 0.85rem;
+            }
+            
+            .slide5-summary-item,
+            .slide6-summary-item {
+                font-size: 0.85rem;
+                padding: 0.35rem;
+            }
+            
+            .slide6-deficit-value {
+                font-size: 1.4rem;
+            }
+        }
+        
+        /* Small Mobile (320px - 479px) */
+        @media (max-width: 479px) {
+            body {
+                font-size: 13px;
+            }
+            
+            .slide3-slide,
+            .slide5-container,
+            .slide6-container {
+                padding: 0.75rem;
+                border-radius: 10px;
+            }
+            
+            .nav-button {
+                width: 38px;
+                height: 55px;
+                opacity: 0.8;
+            }
+            
+            .slide-indicator {
+                font-size: 11px;
+                padding: 5px 12px;
+                bottom: 12px;
+            }
+            
+            .slide-logo {
+                width: 60px;
+                top: 10px;
+                right: 10px;
+            }
+            
+            .slide_one_main_title {
+                font-size: 2.5rem !important;
+                padding: 0 0.75rem;
+                margin-bottom: 1rem;
+            }
+            
+            .slide_one_subtitle {
+                font-size: 1.5rem !important;
+                padding: 0 0.75rem;
+            }
+            
+            .slide_one_logo {
+                width: 80px !important;
+            }
+            
+            .slide_one_decoration {
+                filter: blur(50px);
+                opacity: 0.3;
+            }
+            
+            .slide_one_decoration_1 {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .slide_one_decoration_2 {
+                width: 220px;
+                height: 220px;
+            }
+            
+            .slide3-title,
+            .slide5-title,
+            .slide6-title {
+                padding: 0.75rem;
+                margin-bottom: 1rem;
+            }
+            
+            .slide3-title h1,
+            .slide5-title h1,
+            .slide6-title h1 {
+                font-size: 1.25rem;
+            }
+            
+            .slide3-title h2,
+            .slide5-title h2,
+            .slide6-title h2 {
+                font-size: 0.9rem;
+            }
+            
+            .slide3-stage-card,
+            .slide5-card,
+            .slide6-card {
+                padding: 0.75rem;
+                border-radius: 8px;
+            }
+            
+            .slide3-stage-card h3 {
+                font-size: 1rem;
+            }
+            
+            .slide3-feature-list li {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.85rem;
+            }
+            
+            .slide3-savings-goals {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.4rem;
+                padding: 0.4rem;
+            }
+            
+            .slide3-savings-goal-item {
+                justify-content: space-between;
+            }
+            
+            .slide3-savings-goal-item:first-child::after {
+                display: none;
+            }
+            
+            .slide3-guarantee-grid {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+            
+            .slide3-guarantee-item {
+                padding: 0.75rem;
+            }
+            
+            .slide3-guarantee-item h4 {
+                font-size: 0.9rem;
+            }
+            
+            .slide3-guarantee-item p {
+                font-size: 0.8rem;
+            }
+            
+            .slide5-gender-buttons {
+                gap: 0.4rem;
+            }
+            
+            .slide5-gender-button {
+                width: 80px;
+                padding: 0.35rem 0.7rem;
+                font-size: 0.8rem;
+            }
+            
+            .slide5-age-display {
+                font-size: 1.1rem;
+                padding: 0.4rem;
+            }
+            
+            .slide5-summary-box,
+            .slide6-summary-box {
+                padding: 0.75rem;
+            }
+            
+            .slide5-summary-box h3,
+            .slide6-summary-box h3 {
+                font-size: 0.9rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .slide5-summary-item,
+            .slide6-summary-item {
+                font-size: 0.8rem;
+                padding: 0.3rem;
+                margin: 0.3rem 0;
+            }
+            
+            .slide5-charts-container,
+            .slide6-charts-container {
+                gap: 1rem;
+            }
+            
+            .slide5-chart-wrapper,
+            .slide6-chart-wrapper {
+                height: 220px;
+                padding: 0.5rem;
+            }
+            
+            .slide5-chart-title,
+            .slide6-chart-title {
+                font-size: 0.95rem;
+                margin-bottom: 0.75rem;
+            }
+            
+            .slide5-note {
+                padding: 0.75rem;
+                font-size: 0.8rem;
+            }
+            
+            .slide6-actions-grid {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+            
+            .slide6-action-card {
+                padding: 0.6rem;
+            }
+            
+            .slide6-slider-container {
+                padding: 0.6rem;
+            }
+            
+            .slide6-slider-label {
+                font-size: 0.85rem;
+            }
+            
+            .slide6-calculation-impact {
+                font-size: 0.8rem;
+            }
+            
+            .slide6-deficit-value {
+                font-size: 1.25rem;
+                padding: 0.75rem;
+            }
+            
+            .slide3-dialog-content {
+                padding: 1.5rem;
+                width: 95%;
+            }
+            
+            .slide3-dialog-title {
+                font-size: 1.2rem;
+            }
+            
+            .slide3-dialog-description {
+                font-size: 0.9rem;
+            }
+            
+            .slide3-premium-table th,
+            .slide3-premium-table td {
+                padding: 0.5rem;
+                font-size: 0.85rem;
+            }
+        }
+        
+        /* Landscape Orientation Adjustments */
+        @media (orientation: landscape) and (max-height: 600px) {
+            .slide_one_content_wrapper {
+                transform: translate(-50%, -50%);
+            }
+            
+            .slide_one_main_title {
+                font-size: 2rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .slide_one_subtitle {
+                font-size: 1.25rem;
+            }
+            
+            .slide_one_logo {
+                width: 60px;
+                margin-bottom: 1rem;
+            }
+        }
+        
+        /* Print Styles */
+        @media print {
+            .nav-controls,
+            .slide-logo {
+                display: none !important;
+            }
+            
+            .slide {
+                page-break-after: always;
+                position: relative !important;
+                transform: none !important;
+                opacity: 1 !important;
+                display: block !important;
+            }
+            
+            body {
+                background: white;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <!-- Slide 1: Opening -->
+        <div class="slide active" id="slide1">
+            <div class="slide_one_body">
+                <div class="slide_one_decoration slide_one_decoration_1"></div>
+                <div class="slide_one_decoration slide_one_decoration_2"></div>
+                <div class="slide_one_content_wrapper">
+                    <div class="slide_one_logo_container">
+                        <img src="https://www.gov.il/BlobFolder/office/capital_market_authority/he/logo.png" 
+                             alt="רשות שוק ההון" 
+                             class="slide_one_logo"
+                             loading="eager">
+                    </div>
+                    <div class="slide_one_text_content">
+                        <h1 class="slide_one_main_title">פתרון ארוך טווח לביטוחי הסיעוד</h1>
+                        <h2 class="slide_one_subtitle">ניתוח פיננסי</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Model -->
+        <div class="slide" id="slide2"></div>
+
+        <!-- Slide 3: Premium Calculator -->
+        <div class="slide" id="slide3"></div>
+
+        <!-- Slide 4: Deficit Analysis -->
+        <div class="slide" id="slide4"></div>
+    </div>
+
+    <!-- Navigation Controls -->
+    <div class="nav-controls">
+        <button class="nav-button" id="nextSlide" onclick="changeSlide(1)"></button>
+        <div class="slide-indicator">
+            שקף&nbsp;<span id="currentSlide">1</span>&nbsp;מתוך&nbsp;<span id="totalSlides">4</span>
+        </div>
+        <button class="nav-button" id="prevSlide" onclick="changeSlide(-1)" disabled></button>
+    </div>
+
+    <!-- Logo Fixed Element -->
+    <img src="https://www.gov.il/BlobFolder/office/capital_market_authority/he/logo.png" 
+         class="slide-logo" 
+         alt="רשות שוק ההון"
+         style="display: none;">
+
+    <!-- Dialog Containers -->
+    <div id="dialogs-container"></div>
+<script>
+        /* ============================================ */
+        /* config.js - הגדרות ונתונים גלובליים */
+        /* ============================================ */
+        
+        const AppConfig = {
+            // הגדרות כלליות
+            slides: {
+                total: 4,
+                current: 1
+            },
+            
+            // הגדרות אנימציות
+            animations: {
+                slideTransition: 500,
+                chartDelay: 300
+            },
+            
+            // צבעים לגרפים
+            colors: {
+                model1: {
+                    primary: '#22c55e',
+                    secondary: '#4ade80',
+                    background: 'rgba(34, 197, 94, 0.1)'
+                },
+                model2: {
+                    primary: '#3b82f6',
+                    secondary: '#60a5fa',
+                    background: 'rgba(59, 130, 246, 0.1)'
+                },
+                kupot: {
+                    primary: '#f97316',
+                    secondary: '#fb923c',
+                    background: 'rgba(249, 115, 22, 0.1)'
+                },
+                deficit: {
+                    positive: '#22c55e',
+                    negative: '#ef4444',
+                    neutral: '#94a3b8'
+                }
+            },
+            
+            // נתוני פרמיות - גברים
+            malePremiums: {
+                20: {20: 16, 25: 20, 30: 26, 35: 33, 40: 42, 45: 54, 50: 69, 55: 88, 60: 112, 65: 143, 70: 174},
+                25: {25: 22, 30: 28, 35: 36, 40: 46, 45: 58, 50: 75, 55: 95, 60: 122, 65: 155, 70: 189},
+                30: {30: 31, 35: 39, 40: 50, 45: 64, 50: 82, 55: 104, 60: 133, 65: 170, 70: 207},
+                35: {35: 44, 40: 56, 45: 71, 50: 91, 55: 116, 60: 148, 65: 189, 70: 230},
+                40: {40: 63, 45: 81, 50: 103, 55: 132, 60: 168, 65: 215, 70: 261},
+                45: {45: 95, 50: 121, 55: 154, 60: 197, 65: 251, 70: 305},
+                50: {50: 147, 55: 187, 60: 239, 65: 305, 70: 371},
+                55: {55: 243, 60: 310, 65: 396, 70: 481}
+            },
+            
+            // נתוני פרמיות - נשים
+            femalePremiums: {
+                20: {20: 20, 25: 26, 30: 33, 35: 41, 40: 53, 45: 68, 50: 86, 55: 110, 60: 140, 65: 179, 70: 218},
+                25: {25: 28, 30: 37, 35: 45, 40: 57, 45: 73, 50: 93, 55: 119, 60: 152, 65: 194, 70: 236},
+                30: {30: 39, 35: 49, 40: 63, 45: 80, 50: 102, 55: 131, 60: 167, 65: 213, 70: 258},
+                35: {35: 55, 40: 70, 45: 89, 50: 114, 55: 145, 60: 185, 65: 237, 70: 288},
+                40: {40: 79, 45: 101, 50: 129, 55: 165, 60: 210, 65: 269, 70: 327},
+                45: {45: 118, 50: 151, 55: 193, 60: 246, 65: 314, 70: 381},
+                50: {50: 184, 55: 234, 60: 299, 65: 382, 70: 464},
+                55: {55: 304, 60: 388, 65: 495, 70: 601}
+            },
+            
+            // נתוני פרמיות קבועות
+            fixedPremiums: {
+                male: {
+                    20: 46, 25: 58, 30: 74, 35: 94,
+                    40: 123, 45: 164, 50: 229, 55: 338
+                },
+                female: {
+                    20: 58, 25: 73, 30: 92, 35: 118,
+                    40: 154, 45: 206, 50: 286, 55: 422
+                }
+            },
+            
+            // נתוני קופות חולים
+            kupotPremiums: {
+                20: 12, 25: 19, 30: 40, 35: 63, 40: 81,
+                45: 147, 50: 203, 55: 255, 60: 301,
+                65: 353, 70: 390, 75: 412, 80: 412, 85: 412
+            },
+            
+            // נתוני גירעון
+            deficitData: {
+                basePremiums: 45,
+                baseClaims: -56,
+                baseExpenses: -5,
+                fundGroups: {
+                    'כללית': { premiums: 23, claims: -32, deficit: -9 },
+                    'מכבי': { premiums: 16, claims: -21, deficit: -5 },
+                    'לאומית': { premiums: 2, claims: -3, deficit: -1 },
+                    'מאוחדת': { premiums: 4, claims: -5, deficit: -1 }
+                }
+            },
+            
+            // הגדרות תקופות
+            waitingPeriods: {
+                0: { text: 'ללא שינוי', impact: 0 },
+                1: { text: 'חצי שנה', impact: 10 },
+                2: { text: '9 חודשים', impact: 15 },
+                3: { text: 'שנה', impact: 20 }
+            },
+            
+            eligibilityPeriods: {
+                0: { text: 'ללא שינוי', impact: 0 },
+                1: { text: 'קיצור ל-4 שנים', impact: 10 }
+            },
+            
+            // הגדרות Chart.js ברירת מחדל
+            chartDefaults: {
+                responsive: true,
+                maintainAspectRatio: false,
+                font: {
+                    family: 'system-ui, -apple-system, sans-serif',
+                    size: 12
+                },
+                color: '#64748b'
+            }
+        };
+        
+        // הגדרת ברירות מחדל ל-Chart.js
+        if (typeof Chart !== 'undefined') {
+            Chart.defaults.font.family = AppConfig.chartDefaults.font.family;
+            Chart.defaults.font.size = AppConfig.chartDefaults.font.size;
+            Chart.defaults.color = AppConfig.chartDefaults.color;
+        }
+        
+        // Export configuration
+        window.AppConfig = AppConfig;
+        
+        /* ============================================ */
+        /* navigation.js - ניווט בין שקפים */
+        /* ============================================ */
+        
+        const Navigation = {
+            currentSlideIndex: 1,
+            totalSlides: 4,
+            isTransitioning: false,
+            
+            // אתחול מערכת הניווט
+            init() {
+                this.setupEventListeners();
+                this.updateIndicators();
+                this.initKeyboardNavigation();
+                this.initTouchNavigation();
+                this.setupLogoVisibility();
+            },
+            
+            // הגדרת מאזינים לאירועים
+            setupEventListeners() {
+                const prevBtn = document.getElementById('prevSlide');
+                const nextBtn = document.getElementById('nextSlide');
+                
+                if (prevBtn) {
+                    prevBtn.addEventListener('click', () => this.changeSlide(-1));
+                }
+                
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', () => this.changeSlide(1));
+                }
+            },
+            
+            // ניווט מקלדת
+            initKeyboardNavigation() {
+                document.addEventListener('keydown', (e) => {
+                    if (this.isTransitioning) return;
+                    
+                    switch(e.key) {
+                        case 'ArrowRight':
+                            this.changeSlide(-1);
+                            break;
+                        case 'ArrowLeft':
+                            this.changeSlide(1);
+                            break;
+                        case 'Home':
+                            this.goToSlide(1);
+                            break;
+                        case 'End':
+                            this.goToSlide(this.totalSlides);
+                            break;
+                        case 'Escape':
+                            // אפשר להוסיף פונקציונליות למקש Escape
+                            break;
+                    }
+                });
+            },
+            
+            // ניווט מגע (swipe)
+            initTouchNavigation() {
+                let touchStartX = 0;
+                let touchEndX = 0;
+                const minSwipeDistance = 50;
+                
+                document.addEventListener('touchstart', (e) => {
+                    touchStartX = e.changedTouches[0].screenX;
+                });
+                
+                document.addEventListener('touchend', (e) => {
+                    touchEndX = e.changedTouches[0].screenX;
+                    this.handleSwipe(touchStartX, touchEndX, minSwipeDistance);
+                });
+            },
+            
+            // טיפול בתנועת swipe
+            handleSwipe(startX, endX, minDistance) {
+                const distance = endX - startX;
+                
+                if (Math.abs(distance) < minDistance) return;
+                
+                if (distance > 0) {
+                    // Swipe right (RTL - previous slide)
+                    this.changeSlide(-1);
+                } else {
+                    // Swipe left (RTL - next slide)
+                    this.changeSlide(1);
+                }
+            },
+            
+            // החלפת שקף
+            changeSlide(direction) {
+                if (this.isTransitioning) return;
+                
+                const nextIndex = this.currentSlideIndex + direction;
+                
+                if (nextIndex < 1 || nextIndex > this.totalSlides) return;
+                
+                this.isTransitioning = true;
+                
+                // הסרת overflow-x
+                document.body.style.overflowX = 'hidden';
+                
+                const slides = document.querySelectorAll('.slide');
+                const currentSlide = slides[this.currentSlideIndex - 1];
+                const nextSlide = slides[nextIndex - 1];
+                
+                // הכנת השקפים למעבר
+                this.prepareSlides(currentSlide, nextSlide, direction);
+                
+                // ביצוע האנימציה
+                requestAnimationFrame(() => {
+                    this.animateSlides(currentSlide, nextSlide, direction);
+                });
+                
+                // עדכון אינדקס
+                this.currentSlideIndex = nextIndex;
+                
+                // עדכון UI
+                this.updateIndicators();
+                this.updateLogo();
+                
+                // טעינת תוכן דינמי לשקף
+                this.loadSlideContent(nextIndex);
+                
+                // סיום המעבר
+                setTimeout(() => {
+                    this.cleanupTransition(currentSlide, nextSlide);
+                    this.isTransitioning = false;
+                }, AppConfig.animations.slideTransition);
+            },
+            
+            // מעבר ישיר לשקף מסוים
+            goToSlide(slideNumber) {
+                if (slideNumber === this.currentSlideIndex) return;
+                
+                const direction = slideNumber > this.currentSlideIndex ? 1 : -1;
+                const steps = Math.abs(slideNumber - this.currentSlideIndex);
+                
+                // אפשר להוסיף אנימציה מיוחדת למעבר ישיר
+                this.currentSlideIndex = slideNumber - direction;
+                this.changeSlide(direction);
+            },
+            
+            // הכנת שקפים למעבר
+            prepareSlides(currentSlide, nextSlide, direction) {
+                // הסרת כל המצבים הקודמים
+                document.querySelectorAll('.slide').forEach(slide => {
+                    slide.style.display = 'none';
+                    slide.classList.remove('active', 'prev', 'next');
+                });
+                
+                // הצגת השקפים הרלוונטיים
+                currentSlide.style.display = 'block';
+                nextSlide.style.display = 'block';
+                
+                // הגדרת מיקום התחלתי (הפוך בגלל RTL)
+                if (direction > 0) {
+                    nextSlide.style.transform = 'translateX(-100%)';
+                    currentSlide.style.transform = 'translateX(0)';
+                } else {
+                    nextSlide.style.transform = 'translateX(100%)';
+                    currentSlide.style.transform = 'translateX(0)';
+                }
+            },
+            
+            // אנימציית המעבר
+            animateSlides(currentSlide, nextSlide, direction) {
+                currentSlide.style.transition = 'all 0.5s ease-in-out';
+                nextSlide.style.transition = 'all 0.5s ease-in-out';
+                
+                if (direction > 0) {
+                    currentSlide.style.transform = 'translateX(100%)';
+                } else {
+                    currentSlide.style.transform = 'translateX(-100%)';
+                }
+                
+                nextSlide.style.transform = 'translateX(0)';
+                nextSlide.style.opacity = '1';
+                currentSlide.style.opacity = '0';
+                nextSlide.classList.add('active');
+            },
+            
+            // ניקוי לאחר המעבר
+            cleanupTransition(currentSlide, nextSlide) {
+                currentSlide.style.display = 'none';
+                currentSlide.style.transition = 'none';
+                nextSlide.style.transition = 'none';
+            },
+            
+            // עדכון אינדיקטורים
+            updateIndicators() {
+                const currentSlideElement = document.getElementById('currentSlide');
+                const prevBtn = document.getElementById('prevSlide');
+                const nextBtn = document.getElementById('nextSlide');
+                
+                if (currentSlideElement) {
+                    currentSlideElement.textContent = this.currentSlideIndex;
+                }
+                
+                if (prevBtn) {
+                    prevBtn.disabled = this.currentSlideIndex === 1;
+                }
+                
+                if (nextBtn) {
+                    nextBtn.disabled = this.currentSlideIndex === this.totalSlides;
+                }
+            },
+            
+            // עדכון הלוגו
+            updateLogo() {
+                const logo = document.querySelector('.slide-logo');
+                if (logo) {
+                    logo.style.display = this.currentSlideIndex === 1 ? 'none' : 'block';
+                }
+            },
+            
+            // הגדרת נראות הלוגו
+            setupLogoVisibility() {
+                setInterval(() => {
+                    this.updateLogo();
+                }, 100);
+            },
+            
+            // טעינת תוכן דינמי לשקף
+            loadSlideContent(slideIndex) {
+                setTimeout(() => {
+                    switch(slideIndex) {
+                        case 2:
+                            if (typeof Slide2 !== 'undefined' && Slide2.init) {
+                                Slide2.init();
+                            }
+                            break;
+                        case 3:
+                            if (typeof Slide3 !== 'undefined' && Slide3.init) {
+                                Slide3.init();
+                            }
+                            break;
+                        case 4:
+                            if (typeof Slide4 !== 'undefined' && Slide4.init) {
+                                Slide4.init();
+                            }
+                            break;
+                    }
+                }, AppConfig.animations.chartDelay);
+            }
+        };
+        
+        // Export Navigation
+        window.Navigation = Navigation;
+        
+        // פונקציה גלובלית לחלונית לחצני הניווט
+        function changeSlide(direction) {
+            Navigation.changeSlide(direction);
+        }
+/* ============================================ */
+        /* slide2.js - לוגיקת שקף המודל */
+        /* ============================================ */
+        
+        const Slide2 = {
+            charts: {
+                survival: null,
+                premium: null
+            },
+            
+            // אתחול השקף
+            init() {
+                this.loadContent();
+                // עיכוב קצר לוודא שה-DOM נטען
+                setTimeout(() => {
+                    this.setupEventListeners();
+                    this.ensureDialogsInBody();
+                }, 100);
+            },
+            
+            // טעינת תוכן השקף
+            loadContent() {
+                const slide = document.getElementById('slide2');
+                if (!slide) return;
+                
+                slide.innerHTML = this.getTemplate();
+            },
+            
+            // וידוא שהדיאלוגים נמצאים ב-body
+            ensureDialogsInBody() {
+                // מציאת כל הדיאלוגים
+                const dialogs = document.querySelectorAll('.slide3-dialog-overlay');
+                
+                // העברה ל-body אם הם לא שם
+                dialogs.forEach(dialog => {
+                    if (dialog.parentElement !== document.body) {
+                        document.body.appendChild(dialog);
+                    }
+                });
+            },
+            
+            // הגדרת מאזיני אירועים
+            setupEventListeners() {
+                // Dialog triggers
+                const dialogTriggers = document.querySelectorAll('.slide3-dialog-trigger');
+                dialogTriggers.forEach(trigger => {
+                    trigger.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const dialogType = e.currentTarget.getAttribute('data-dialog');
+                        this.openDialog(dialogType);
+                    });
+                });
+            },
+            
+            // תבנית HTML של השקף
+            getTemplate() {
+                return `
+                    <div class="slide3-body">
+                        <div class="slide3-slide">
+                            <div class="example-ribbon">מוצר לדוגמה</div>
+                            <div class="slide3-title">
+                                <h1>מודל חדש - שילוב חיסכון וביטוח סיעודי</h1>
+                                <h2>פתרון ארוך טווח למערכת הביטוח הסיעודי בישראל</h2>
+                            </div>
+                
+                            <div class="slide3-model-stages">
+                                ${this.getSavingsStageTemplate()}
+                                ${this.getInsuranceStageTemplate()}
+                            </div>
+                
+                            ${this.getGuaranteesTemplate()}
+                        </div>
+                    </div>
+                    ${this.getDialogsTemplate()}
+                `;
+            },
+            
+            // תבנית שלב החיסכון
+            getSavingsStageTemplate() {
+                return `
+                    <div class="slide3-stage-card slide3-savings">
+                        <h3>שלב ראשון - חיסכון (עד גיל 70)</h3>
+                        <ul class="slide3-feature-list">
+                            <li><strong>חיסכון אישי</strong> בפוליסת חיסכון פרטית בפרמיות קבועות או משתנות</li>
+                            <li><strong>ניהול השקעות</strong> מסלול המותאם לגיל ולסיכון</li>
+                            <li><strong>דמי ניהול:</strong> 1% מהצבירה</li>
+                            <li style="display: flex; align-items: center; position: relative;">
+                                <strong style="margin-left: 0.5rem;" class="slide3-tooltip-trigger" data-tooltip="בהתאם לאיזון אקטוארי">יעדי חיסכון:</strong>
+                                <div class="slide3-savings-goals">
+                                    <div class="slide3-savings-goal-item">
+                                        <span class="slide3-savings-goal-label">זכר:</span>
+                                        <span class="slide3-savings-goal-amount">80,000 ₪</span>
+                                    </div>
+                                    <div class="slide3-savings-goal-item slide3-women">
+                                        <span class="slide3-savings-goal-label">נקבה:</span>
+                                        <span class="slide3-savings-goal-amount">100,000 ₪</span>
+                                    </div>
+                                </div>
+                                <span style="font-size: 0.75rem; color: #64748b; position: absolute; left: 20px; top: 50%; transform: translateY(-50%); background: linear-gradient(90deg, rgba(251,252,253,0.95), rgba(248,250,252,0.95)); padding: 4px 10px; border-radius: 14px; border: 1px solid rgba(226,232,240,0.3); font-weight: 500; letter-spacing: 0.3px;">לתגמולים של 5,000 ₪ לחודש</span>
+                            </li>
+                            <li><strong>תשואה שנתית חזויה:</strong> <span class="slide3-tooltip-trigger" data-tooltip="לפי נתוני רשות שוק ההון במסלול כללי">4%</span></li>
+                            <li><strong>גיל הצטרפות אופטימלי:</strong>עד <span class="slide3-dialog-trigger" data-dialog="age55">55</span></li>
+                        </ul>
+                    </div>
+                `;
+            },
+            
+            // תבנית שלב הביטוח
+            getInsuranceStageTemplate() {
+                return `
+                    <div class="slide3-stage-card slide3-insurance">
+                        <h3>שלב שני - ביטוח סיעודי (מגיל 70)</h3>
+                        <ul class="slide3-feature-list">
+                            <li><strong>המרה אוטומטית</strong> לפרמיה חד-פעמית בגיל <span class="slide3-dialog-trigger" data-dialog="age70">70</span></li>
+                            <li><strong>ללא חיתום נוסף</strong> במעבר בין השלבים</li>
+                            <li><strong>כיסוי מקיף</strong> לכל החיים</li>
+                            <li style="position: relative;"><strong>תגמול חודשי:</strong> <span class="slide3-tooltip-trigger" data-tooltip="זהה לתגמולים בביטוח סיעודי קבוצתי בקופות החולים כיום, מתואם למקדם המרה שייקבע בגיל 70">5,000 ₪</span><span style="font-size: 0.75rem; color: #64748b; position: absolute; left: 20px; top: 50%; transform: translateY(-50%); background: linear-gradient(90deg, rgba(251,252,253,0.95), rgba(248,250,252,0.95)); padding: 4px 10px; border-radius: 14px; border: 1px solid rgba(226,232,240,0.3); font-weight: 500; letter-spacing: 0.3px;">נגזר מהצבירה</span></li>
+                            <li><strong>תקופת תשלום:</strong> <span class="slide3-tooltip-trigger" data-tooltip="זהה לביטוח סיעודי קבוצתי בקופות החולים, כאשר בפועל משך התביעה הממוצע עומד על 38 חודשים">עד 60 חודשים</span></li>
+                            <li><strong>תשואה שנתית חזויה:</strong> <span class="slide3-tooltip-trigger slide3-long" data-tooltip="ריבית חסרת סיכון לטווח ארוך">2.5%</span></li>
+                        </ul>
+                    </div>
+                `;
+            },
+            
+            // תבנית הבטחות
+            getGuaranteesTemplate() {
+                return `
+                    <div class="slide3-guarantees">
+                        <h3>הבטחות מובנות במוצר</h3>
+                        <div class="slide3-guarantee-grid">
+                            <div class="slide3-guarantee-item">
+                                <h4>הבטחת מוות ללא תביעה</h4>
+                                <p>30,000 ₪ במקרה פטירה ללא מצב סיעודי</p>
+                            </div>
+                            <div class="slide3-guarantee-item">
+                                <h4>הבטחת תשלום מינימלי</h4>
+                                <p>12 חודשי תשלום במקרה פטירה תוך כדי קבלת תגמולים</p>
+                            </div>
+                            <div class="slide3-guarantee-item">
+                                <h4>החזר חיסכון</h4>
+                                <p>החזר יתרה צבורה במקרה פטירה/סיעוד לפני גיל 70</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            },
+            
+            // תבנית הדיאלוגים
+            getDialogsTemplate() {
+                return `
+                    <div id="slide3-ageDialog" class="slide3-dialog-overlay" style="display: none;">
+                        <div class="slide3-dialog-content" onclick="event.stopPropagation()">
+                            <div class="slide3-dialog-title">חישוב גיל המעבר - 70</div>
+                            <div class="slide3-dialog-description">
+                                התרשים מציג את שיעורי השרידות באוכלוסיית המבוטחים מגיל 0 עד 100 (הקו הכחול).
+                                הקו האדום מסמן את רף ה-85%, המייצג את שיעור ההישרדות בגיל 70. כ-85% מהאוכלוסייה
+                                מגיעים לגיל 70 ללא כניסה למצב סיעודי, נתון המהווה בסיס לקביעת גיל זה כנקודת המעבר מחיסכון לביטוח.
+                            </div>
+                            <div class="slide3-dialog-chart">
+                                <canvas id="slide3-survivalChart"></canvas>
+                            </div>
+                            <button class="slide3-dialog-close" onclick="Slide2.closeDialog('age70')">✕</button>
+                        </div>
+                    </div>
+                    
+                    <div id="slide3-age55Dialog" class="slide3-dialog-overlay" style="display: none;">
+                        <div class="slide3-dialog-content" onclick="event.stopPropagation()">
+                            <div class="slide3-dialog-title">גיל ההצטרפות למוצר</div>
+                            <div class="slide3-dialog-description">
+                                הגיל האופטימלי להצטרפות הוא מתחת ל-55 שנים, וזאת משלושה טעמים עיקריים:
+                            </div>
+                            
+                            <div class="slide3-dialog-description">
+                                <ol>
+                                    <li>מניעת אנטי-סלקציה - הגבלת הגיל מצמצמת את האפשרות להצטרפות סלקטיבית של אוכלוסייה מבוגרת בעלת סיכון מוגבר.</li>
+                                    <li>היתכנות כלכלית - צבירת החיסכון הנדרש בפרק זמן קצר מחייבת הפקדות חודשיות גבוהות במיוחד:</li>
+                                    <table class="slide3-premium-table">
+                                        <thead>
+                                            <tr>
+                                                <th>גיל ההצטרפות</th>
+                                                <th>זכר</th>
+                                                <th>נקבה</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>55</td>
+                                                <td>₪ 370</td>
+                                                <td>₪ 470</td>
+                                            </tr>
+                                            <tr>
+                                                <td>60</td>
+                                                <td>₪ 600</td>
+                                                <td>₪ 750</td>
+                                            </tr>
+                                            <tr>
+                                                <td>65</td>
+                                                <td>₪ 1200</td>
+                                                <td>₪ 1600</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <li>תמחור הוגן - גיל 55 נבחר גם בשל היותו נקודת מפנה משמעותית במודל הקיים של הביטוח הקבוצתי בקופות החולים.</li>
+                                </ol>
+                            </div>
+                            <div class="slide3-dialog-chart">
+                                <canvas id="slide3-premiumChart"></canvas>
+                            </div>
+                            <button class="slide3-dialog-close" onclick="Slide2.closeDialog('age55')">✕</button>
+                        </div>
+                    </div>
+                `;
+            },
+            
+            // פתיחת הדיאלוג
+            openDialog(type) {
+                const dialogId = type === 'age70' ? 'slide3-ageDialog' : 'slide3-age55Dialog';
+                const dialog = document.getElementById(dialogId);
+                
+                if (dialog) {
+                    // הצגת הדיאלוג
+                    dialog.style.display = 'flex';
+                    
+                    // הוספת event listener לסגירה בלחיצה על הרקע
+                    dialog.onclick = (e) => {
+                        if (e.target === dialog) {
+                            this.closeDialog(type);
+                        }
+                    };
+                    
+                    // יצירת הגרף המתאים
+                    setTimeout(() => {
+                        if (type === 'age70') {
+                            this.createSurvivalChart();
+                        } else {
+                            this.createPremiumChart();
+                        }
+                    }, 100);
+                }
+            },
+            
+            // סגירת הדיאלוג
+            closeDialog(type) {
+                const dialogId = type === 'age70' ? 'slide3-ageDialog' : 'slide3-age55Dialog';
+                const dialog = document.getElementById(dialogId);
+                
+                if (dialog) {
+                    dialog.style.display = 'none';
+                    
+                    // ניקוי הגרף
+                    if (type === 'age70' && this.charts.survival) {
+                        this.charts.survival.destroy();
+                        this.charts.survival = null;
+                    } else if (type === 'age55' && this.charts.premium) {
+                        this.charts.premium.destroy();
+                        this.charts.premium = null;
+                    }
+                }
+            },
+            
+            // יצירת גרף שרידות
+            createSurvivalChart() {
+                // בדיקה אם הגרף כבר קיים
+                if (this.charts.survival) {
+                    this.charts.survival.destroy();
+                    this.charts.survival = null;
+                }
+                
+                const ctx = document.getElementById('slide3-survivalChart');
+                if (!ctx) return;
+                
+                const labels = Array.from({length: 11}, (_, i) => i * 10);
+                
+                const survivalData = labels.map(age => {
+                    if (age <= 70) {
+                        const x = age / 70;
+                        const decay = x * x;
+                        return 100 - (15 * decay);
+                    } else {
+                        const baseDecay = 1.3;
+                        const acceleratedDecay = (age - 70) * 0.05;
+                        return Math.max(85 - ((age - 70) * (baseDecay + acceleratedDecay)), 0);
+                    }
+                });
+        
+                const pctLine = Array(11).fill(85);
+        
+                this.charts.survival = new Chart(ctx.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'שרידות',
+                            data: survivalData,
+                            borderColor: '#3b82f6',
+                            borderWidth: 2.5,
+                            tension: 0.4,
+                            fill: false,
+                            pointRadius: 0,
+                            pointHoverRadius: 0
+                        }, {
+                            label: 'רף קריטי',
+                            data: pctLine,
+                            borderColor: 'rgba(239, 68, 68, 0.6)',
+                            borderWidth: 1.5,
+                            tension: 0,
+                            fill: false,
+                            borderDash: [4, 4],
+                            pointRadius: 0,
+                            pointHoverRadius: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    usePointStyle: true,
+                                    pointStyle: 'line',
+                                    padding: 20,
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                enabled: true,
+                                mode: 'index',
+                                intersect: false,
+                                backgroundColor: 'rgba(0,0,0,0.7)',
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.dataset.label + ': ' + context.parsed.y.toFixed(1) + '%';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                grid: {
+                                    color: 'rgba(0,0,0,0.05)',
+                                    drawBorder: false
+                                },
+                                ticks: {
+                                    callback: function(value) {
+                                        return value + '%';
+                                    },
+                                    stepSize: 10,
+                                    font: {
+                                        size: 11
+                                    }
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                },
+                                ticks: {
+                                    stepSize: 10,
+                                    font: {
+                                        size: 11
+                                    }
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'גיל',
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            },
+            
+            // יצירת גרף פרמיות
+            createPremiumChart() {
+                // בדיקה אם הגרף כבר קיים
+                if (this.charts.premium) {
+                    this.charts.premium.destroy();
+                    this.charts.premium = null;
+                }
+                
+                const ctx = document.getElementById('slide3-premiumChart');
+                if (!ctx) return;
+                
+                const years = ['2024', '2029', '2034', '2039', '2044', '2049', '2054', '2059', '2064'];
+                const existingModel = [1600, 1700, 1630, 1330, 920, 470, 150, 20, 1];
+                const newModel = [1600, 1200, 880, 540, 270, 100, 30, 3, 0];
+                
+                this.charts.premium = new Chart(ctx.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: years,
+                        datasets: [
+                            {
+                                label: 'תביעות שישולמו',
+                                data: existingModel,
+                                borderColor: '#94a3b8',
+                                borderWidth: 2,
+                                tension: 0.4,
+                                fill: false,
+                                pointRadius: 0,
+                                pointHoverRadius: 0
+                            },
+                            {
+                                label: 'פרמיות שיתקבלו',
+                                data: newModel,
+                                borderColor: '#0ea5e9',
+                                borderWidth: 2,
+                                tension: 0.4,
+                                fill: false,
+                                pointRadius: 0,
+                                pointHoverRadius: 0
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    usePointStyle: true,
+                                    pointStyle: 'line',
+                                    padding: 20,
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false,
+                                backgroundColor: 'rgba(0,0,0,0.7)',
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.dataset.label + ': ' + context.parsed.y.toLocaleString();
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(0,0,0,0.05)',
+                                    drawBorder: false
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 11
+                                    },
+                                    callback: function(value) {
+                                        return value.toLocaleString();
+                                    }
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 11
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            },
+            
+            // ניקוי גרפים
+            destroy() {
+                if (this.charts.survival) {
+                    this.charts.survival.destroy();
+                    this.charts.survival = null;
+                }
+                if (this.charts.premium) {
+                    this.charts.premium.destroy();
+                    this.charts.premium = null;
+                }
+            }
+        };
+        
+        // Export Slide2
+        window.Slide2 = Slide2;
+/* ============================================ */
+        /* slide3.js - לוגיקת מחשבון פרמיות */
+        /* ============================================ */
+        
+        const Slide3 = {
+            charts: {
+                monthly: null,
+                cumulative: null
+            },
+            
+            state: {
+                currentGender: 'male',
+                currentAge: 30
+            },
+            
+            // אתחול השקף
+            init() {
+                this.loadContent();
+                setTimeout(() => {
+                    this.setupEventListeners();
+                    this.createCharts();
+                    this.updateCharts();
+                }, 100);
+            },
+            
+            // טעינת תוכן השקף
+            loadContent() {
+                const slide = document.getElementById('slide3');
+                if (!slide) return;
+                
+                slide.innerHTML = this.getTemplate();
+            },
+            
+            // הגדרת מאזיני אירועים
+            setupEventListeners() {
+                // Age slider
+                const ageInput = document.getElementById('slide3AgeInput');
+                if (ageInput) {
+                    ageInput.addEventListener('input', (e) => {
+                        this.state.currentAge = parseInt(e.target.value);
+                        document.getElementById('slide3AgeDisplay').textContent = this.state.currentAge;
+                        this.updateCharts();
+                    });
+                }
+                
+                // Gender buttons
+                const maleBtn = document.getElementById('slide3MaleBtn');
+                const femaleBtn = document.getElementById('slide3FemaleBtn');
+                
+                if (maleBtn) {
+                    maleBtn.addEventListener('click', () => {
+                        this.state.currentGender = 'male';
+                        maleBtn.classList.add('active');
+                        femaleBtn.classList.remove('active');
+                        this.updateCharts();
+                    });
+                }
+                
+                if (femaleBtn) {
+                    femaleBtn.addEventListener('click', () => {
+                        this.state.currentGender = 'female';
+                        femaleBtn.classList.add('active');
+                        maleBtn.classList.remove('active');
+                        this.updateCharts();
+                    });
+                }
+            },
+            
+            // תבנית HTML
+            getTemplate() {
+                return `
+                    <div class="slide5-body">
+                        <div class="slide5-container">
+                            <div class="slide5-title">
+                                <h1>מחשבון פרמיות</h1>
+                                <h2>השוואת פרמיות בין המודל החדש לקופות החולים</h2>
+                            </div>
+
+                            <div class="slide5-grid">
+                                ${this.getControlsTemplate()}
+                                ${this.getChartsTemplate()}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            },
+            
+            // תבנית בקרות
+            getControlsTemplate() {
+                return `
+                    <div class="slide5-card slide5-controls">
+                        <div class="slide5-control-group">
+                            <label>גיל הצטרפות:</label>
+                            <input type="range" id="slide3AgeInput" class="slide5-range" min="20" max="55" step="5" value="30"/>
+                            <div class="slide5-age-display" id="slide3AgeDisplay">30</div>
+                        </div>
+
+                        <div class="slide5-control-group">
+                            <label>מין:</label>
+                            <div class="slide5-gender-buttons">
+                                <button class="slide5-gender-button active" id="slide3MaleBtn">זכר</button>
+                                <button class="slide5-gender-button" id="slide3FemaleBtn">נקבה</button>
+                            </div>
+                        </div>
+
+                        <div class="slide5-summary-box">
+                            <h3>סיכום תשלומים</h3>
+                            <div class="slide5-summary-item">
+                                <span>פרמיה התחלתית - קבועה:</span>
+                                <span id="slide3FixedModelInitial">₪0</span>
+                            </div>
+                            <div class="slide5-summary-item">
+                                <span>פרמיה התחלתית - משתנה:</span>
+                                <span id="slide3NewModelInitial">₪0</span>
+                            </div>
+                            <div class="slide5-summary-item">
+                                <span>פרמיה התחלתית - קופות חולים:</span>
+                                <span id="slide3KupotInitial">₪0</span>
+                            </div>
+                            <div class="slide5-summary-item">
+                                <span>סך תשלום - פרמיה קבועה:</span>
+                                <span id="slide3FixedModelTotal">₪0</span>
+                            </div>
+                            <div class="slide5-summary-item">
+                                <span>סך תשלום - פרמיה משתנה:</span>
+                                <span id="slide3NewModelTotal">₪0</span>
+                            </div>
+                            <div class="slide5-summary-item">
+                                <span>סך תשלום - קופות חולים:</span>
+                                <span id="slide3KupotTotal">₪0</span>
+                            </div>
+                        </div>
+
+                        <div class="slide5-note">
+                            <strong>הערה:</strong> בעוד שהפרמיות בקופות החולים הן תשלום עבור הביטוח בלבד, במודל החדש הפרמיות נצברות כחיסכון אישי לטובת המבוטח
+                        </div>
+                    </div>
+                `;
+            },
+            
+            // תבנית גרפים
+            getChartsTemplate() {
+                return `
+                    <div class="slide5-card slide5-charts-container">
+                        <div class="slide5-chart-wrapper">
+                            <div class="slide5-chart-title">פרמיה חודשית</div>
+                            <canvas id="slide3MonthlyChart"></canvas>
+                        </div>
+                        <div class="slide5-chart-wrapper">
+                            <div class="slide5-chart-title">פרמיות מצטברות</div>
+                            <canvas id="slide3CumulativeChart"></canvas>
+                        </div>
+                    </div>
+                `;
+            },
+            
+            // יצירת גרפים
+            createCharts() {
+                const monthlyCtx = document.getElementById('slide3MonthlyChart');
+                const cumulativeCtx = document.getElementById('slide3CumulativeChart');
+                
+                if (!monthlyCtx || !cumulativeCtx) return;
+
+                // גרף חודשי
+                this.charts.monthly = new Chart(monthlyCtx.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: [
+                            {
+                                label: 'מודל חדש - פרמיה קבועה',
+                                data: [],
+                                borderColor: AppConfig.colors.model1.primary,
+                                backgroundColor: AppConfig.colors.model1.background,
+                                tension: 0.4,
+                                pointRadius: 4,
+                                pointHoverRadius: 6,
+                                borderWidth: 2.5,
+                                pointBackgroundColor: '#ffffff',
+                                pointBorderColor: AppConfig.colors.model1.primary,
+                                pointBorderWidth: 2
+                            },
+                            {
+                                label: 'מודל חדש - פרמיה משתנה',
+                                data: [],
+                                borderColor: AppConfig.colors.model2.primary,
+                                backgroundColor: AppConfig.colors.model2.background,
+                                tension: 0.4,
+                                pointRadius: 4,
+                                pointHoverRadius: 6,
+                                borderWidth: 2.5,
+                                pointBackgroundColor: '#ffffff',
+                                pointBorderColor: AppConfig.colors.model2.primary,
+                                pointBorderWidth: 2
+                            },
+                            {
+                                label: 'קופות חולים',
+                                data: [],
+                                borderColor: AppConfig.colors.kupot.primary,
+                                backgroundColor: AppConfig.colors.kupot.background,
+                                tension: 0.4,
+                                pointRadius: 4,
+                                pointHoverRadius: 6,
+                                borderWidth: 2.5,
+                                pointBackgroundColor: '#ffffff',
+                                pointBorderColor: AppConfig.colors.kupot.primary,
+                                pointBorderWidth: 2
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    padding: 12,
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'פרמיה חודשית (₪)'
+                                },
+                                ticks: {
+                                    stepSize: 100
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'גיל'
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // גרף מצטבר
+                this.charts.cumulative = new Chart(cumulativeCtx.getContext('2d'), {
+                    type: 'bar',
+                    plugins: [{
+                        beforeDraw: function(chart) {
+                            chart.data.datasets[0].borderRadius = 8;
+                            chart.data.datasets[0].borderSkipped = false;
+                        }
+                    }],
+                    data: {
+                        labels: ['מודל חדש - קבועה', 'מודל חדש - משתנה', 'קופות חולים'],
+                        datasets: [{
+                            data: [0, 0, 0],
+                            backgroundColor: [
+                                AppConfig.colors.model1.primary,
+                                AppConfig.colors.model2.primary,
+                                AppConfig.colors.kupot.primary
+                            ],
+                            borderColor: '#ffffff',
+                            borderWidth: 2,
+                            borderRadius: 7,
+                            borderSkipped: false,
+                            barThickness: 90
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: {
+                                    display: false
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'סך תשלומים (₪)'
+                                },
+                                ticks: {
+                                    callback: function(value) {
+                                        return new Intl.NumberFormat('he-IL').format(value) + ' ₪';
+                                    },
+                                    stepSize: 50000
+                                }
+                            }
+                        }
+                    }
+                });
+            },
+            
+            // עדכון גרפים
+            updateCharts() {
+                const premiumsData = this.state.currentGender === 'male' ? 
+                    AppConfig.malePremiums : AppConfig.femalePremiums;
+                const fixedPremium = AppConfig.fixedPremiums[this.state.currentGender][this.state.currentAge];
+                
+                const monthlyData = [];
+                let newModelCumulative = 0;
+                let fixedModelCumulative = 0;
+                let kupotCumulative = 0;
+
+                // חישוב נתונים
+                for (let age = this.state.currentAge; age <= 85; age += 5) {
+                    let newModelMonthly = null;
+                    let fixedModelMonthly = null;
+                    const kupotMonthly = AppConfig.kupotPremiums[age] || 
+                        AppConfig.kupotPremiums[Math.floor(age/5)*5];
+
+                    if (age <= 70) {
+                        newModelMonthly = premiumsData[this.state.currentAge] && 
+                            premiumsData[this.state.currentAge][age] ? 
+                            premiumsData[this.state.currentAge][age] : null;
+                        fixedModelMonthly = fixedPremium;
+                        
+                        if (newModelMonthly) {
+                            newModelCumulative += newModelMonthly * 12 * 5;
+                        }
+                        if (fixedModelMonthly) {
+                            fixedModelCumulative += fixedModelMonthly * 12 * 5;
+                        }
+                    }
+                    
+                    kupotCumulative += kupotMonthly * 12 * 5;
+
+                    monthlyData.push({
+                        age: age,
+                        newModel: newModelMonthly,
+                        fixed: fixedModelMonthly,
+                        kupot: kupotMonthly
+                    });
+                }
+
+                // עדכון גרף חודשי
+                if (this.charts.monthly) {
+                    this.charts.monthly.data.labels = monthlyData.map(d => d.age);
+                    this.charts.monthly.data.datasets[0].data = monthlyData.map(d => d.fixed);
+                    this.charts.monthly.data.datasets[1].data = monthlyData.map(d => d.newModel);
+                    this.charts.monthly.data.datasets[2].data = monthlyData.map(d => d.kupot);
+                    this.charts.monthly.update();
+                }
+
+                // עדכון גרף מצטבר
+                if (this.charts.cumulative) {
+                    this.charts.cumulative.data.datasets[0].data = [
+                        fixedModelCumulative, 
+                        newModelCumulative, 
+                        kupotCumulative
+                    ];
+                    this.charts.cumulative.update();
+                }
+
+                // עדכון סיכום
+                this.updateSummary(
+                    fixedPremium,
+                    monthlyData[0].newModel,
+                    monthlyData[0].kupot,
+                    fixedModelCumulative,
+                    newModelCumulative,
+                    kupotCumulative
+                );
+            },
+            
+            // עדכון סיכום
+            updateSummary(fixedInitial, newInitial, kupotInitial, fixedTotal, newTotal, kupotTotal) {
+                const elements = {
+                    'slide3FixedModelInitial': `₪${fixedInitial}`,
+                    'slide3NewModelInitial': `₪${newInitial}`,
+                    'slide3KupotInitial': `₪${kupotInitial}`,
+                    'slide3FixedModelTotal': `₪${fixedTotal.toLocaleString()}`,
+                    'slide3NewModelTotal': `₪${newTotal.toLocaleString()}`,
+                    'slide3KupotTotal': `₪${kupotTotal.toLocaleString()}`
+                };
+                
+                Object.keys(elements).forEach(id => {
+                    const element = document.getElementById(id);
+                    if (element) {
+                        element.textContent = elements[id];
+                    }
+                });
+            },
+            
+            // ניקוי גרפים
+            destroy() {
+                if (this.charts.monthly) {
+                    this.charts.monthly.destroy();
+                    this.charts.monthly = null;
+                }
+                if (this.charts.cumulative) {
+                    this.charts.cumulative.destroy();
+                    this.charts.cumulative = null;
+                }
+            }
+        };
+        
+        // Export Slide3
+        window.Slide3 = Slide3;
+/* ============================================ */
+        /* slide4.js - לוגיקת ניתוח גירעון */
+        /* ============================================ */
+        
+        const Slide4 = {
+            charts: {
+                deficit: null,
+                totalDeficit: null
+            },
+            
+            state: {
+                basePremiums: 45,
+                baseClaims: -56,
+                baseExpenses: -5,
+                premiumChange: 0,
+                claimsChange: 0,
+                fundValue: 0,
+                waitingPeriod: 0,
+                eligibilityPeriod: 0
+            },
+            
+            // אתחול השקף
+            init() {
+                this.loadContent();
+                setTimeout(() => {
+                    this.setupEventListeners();
+                    this.createCharts();
+                    this.updateCharts();
+                }, 100);
+            },
+            
+            // טעינת תוכן
+            loadContent() {
+                const slide = document.getElementById('slide4');
+                if (!slide) return;
+                
+                slide.innerHTML = this.getTemplate();
+            },
+            
+            // הגדרת מאזיני אירועים
+            setupEventListeners() {
+                // Premium slider
+                const premiumSlider = document.getElementById('slide6PremiumSlider');
+                if (premiumSlider) {
+                    premiumSlider.addEventListener('input', (e) => {
+                        this.state.premiumChange = Number(e.target.value);
+                        document.getElementById('slide6PremiumValue').textContent = e.target.value;
+                        this.updateCharts();
+                    });
+                }
+                
+                // Claims slider
+                const claimsSlider = document.getElementById('slide6ClaimsSlider');
+                if (claimsSlider) {
+                    claimsSlider.addEventListener('input', (e) => {
+                        this.state.claimsChange = Number(e.target.value);
+                        document.getElementById('slide6ClaimsValue').textContent = e.target.value;
+                        this.updateCharts();
+                    });
+                }
+                
+                // Waiting period slider
+                const waitingSlider = document.getElementById('slide6WaitingSlider');
+                if (waitingSlider) {
+                    waitingSlider.addEventListener('input', (e) => {
+                        this.state.waitingPeriod = Number(e.target.value);
+                        const periodData = AppConfig.waitingPeriods[e.target.value];
+                        document.getElementById('slide6WaitingValue').textContent = periodData.text;
+                        this.updateCharts();
+                    });
+                }
+                
+                // Fund slider
+                const fundSlider = document.getElementById('slide6FundSlider');
+                if (fundSlider) {
+                    fundSlider.addEventListener('input', (e) => {
+                        this.state.fundValue = Number(e.target.value);
+                        document.getElementById('slide6FundValue').textContent = e.target.value;
+                        this.updateCharts();
+                    });
+                }
+                
+                // Eligibility slider
+                const eligibilitySlider = document.getElementById('slide6EligibilitySlider');
+                if (eligibilitySlider) {
+                    eligibilitySlider.addEventListener('input', (e) => {
+                        this.state.eligibilityPeriod = Number(e.target.value);
+                        const periodData = AppConfig.eligibilityPeriods[e.target.value];
+                        document.getElementById('slide6EligibilityValue').textContent = periodData.text;
+                        this.updateCharts();
+                    });
+                }
+            },
+            
+            // תבנית HTML ראשית
+            getTemplate() {
+                return `
+                    <div class="slide6-body">
+                        <div class="slide6-container">
+                            <div class="slide6-title">
+                                <h1>ניתוח גירעון באוכלוסיית בני 55 ומעלה</h1>
+                                <h2>חלוקה לקופות וסימולטור</h2>
+                            </div>
+
+                            <div class="slide6-grid">
+                                ${this.getControlsTemplate()}
+                                ${this.getChartsTemplate()}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            },
+            
+            // תבנית בקרות
+            getControlsTemplate() {
+                return `
+                    <div class="slide6-card slide6-controls">
+                        <h3 class="slide6-control-title">סימולטור טיפול בגירעון</h3>
+
+                        <div class="slide6-slider-container">
+                            <div class="slide6-slider-group">
+                                <div class="slide6-slider-label">
+                                    <span>העלאת פרמיות</span>
+                                    <div class="slide6-slider-value">
+                                        <span id="slide6PremiumValue">0</span>%
+                                    </div>
+                                </div>
+                                <input type="range" id="slide6PremiumSlider" class="slide6-range" min="0" max="20" value="0" step="1">
+                                <div class="slide6-calculation-impact" id="slide6PremiumImpact"></div>
+                            </div>
+
+                            <div class="slide6-slider-group">
+                                <div class="slide6-slider-label">
+                                    <span>הקטנת תביעות</span>
+                                    <div class="slide6-slider-value">
+                                        <span id="slide6ClaimsValue">0</span>%
+                                    </div>
+                                </div>
+                                <input type="range" id="slide6ClaimsSlider" class="slide6-range" min="0" max="20" value="0" step="1">
+                                <div class="slide6-calculation-impact" id="slide6ClaimsImpact"></div>
+                            </div>
+
+                            <div class="slide6-slider-group">
+                                <div class="slide6-slider-label">
+                                    <span>תקופת המתנה</span>
+                                    <div class="slide6-slider-value">
+                                        <span id="slide6WaitingValue">ללא שינוי</span>
+                                    </div>
+                                </div>
+                                <input type="range" id="slide6WaitingSlider" class="slide6-range" min="0" max="3" value="0" step="1">
+                                <div class="slide6-calculation-impact" id="slide6WaitingImpact"></div>
+                            </div>
+
+                            <div class="slide6-slider-group">
+                                <div class="slide6-slider-label">
+                                    <span>קיצור תקופת זכאות</span>
+                                    <div class="slide6-slider-value">
+                                        <span id="slide6EligibilityValue">ללא שינוי</span>
+                                    </div>
+                                </div>
+                                <input type="range" id="slide6EligibilitySlider" class="slide6-range" min="0" max="1" value="0" step="1">
+                                <div class="slide6-calculation-impact" id="slide6EligibilityImpact"></div>
+                            </div>
+
+                            <div class="slide6-slider-group">
+                                <div class="slide6-slider-label">
+                                    <span>יתרת קרן קיימת</span>
+                                    <div class="slide6-slider-value">
+                                        <span id="slide6FundValue">0</span> מיליארד ₪
+                                    </div>
+                                </div>
+                                <input type="range" id="slide6FundSlider" class="slide6-range" min="0" max="9" value="0" step="1">
+                                <div class="slide6-calculation-impact" id="slide6FundImpact"></div>
+                            </div>
+                        </div>
+
+                        <div class="slide6-summary-box">
+                            <h3>גירעון צפוי לאחר הפעולות</h3>
+                            <div class="slide6-deficit-value" id="slide6ProjectedDeficit">16 מיליארד ₪</div>
+                        </div>
+                    </div>
+                `;
+            },
+            
+            // תבנית גרפים
+            getChartsTemplate() {
+                return `
+                    <div class="slide6-card slide6-charts-container">
+                        <div class="slide6-chart-wrapper">
+                            <div class="slide6-chart-title">ניתוח גירעון לפי קופות חולים</div>
+                            <canvas id="slide6DeficitChart"></canvas>
+                        </div>
+                        <div class="slide6-chart-wrapper">
+                            <div class="slide6-chart-title">סך הכל גירעון במערכת</div>
+                            <canvas id="slide6TotalDeficitChart"></canvas>
+                        </div>
+                    </div>
+                `;
+            },
+            
+            // חישוב גירעון כולל
+            calculateTotalDeficit() {
+                // חישוב פרמיות עם העלאה באחוזים
+                let currentPremiums = this.state.basePremiums * (1 + this.state.premiumChange / 100);
+                
+                // חישוב תביעות - מתחילים מהבסיס
+                let currentClaims = this.state.baseClaims;
+                
+                // הפחתת תביעות ידנית
+                currentClaims *= (1 - this.state.claimsChange / 100);
+                
+                // הפחתה בגין תקופת המתנה
+                const waitingImpact = AppConfig.waitingPeriods[this.state.waitingPeriod].impact;
+                currentClaims *= (1 - waitingImpact / 100);
+                
+                // הפחתה בגין קיצור תקופת זכאות
+                const eligibilityImpact = AppConfig.eligibilityPeriods[this.state.eligibilityPeriod].impact;
+                currentClaims *= (1 - eligibilityImpact / 100);
+
+                return {
+                    premiums: currentPremiums,
+                    claimsAndExpenses: currentClaims + this.state.baseExpenses,
+                    fundValue: this.state.fundValue,
+                    total: currentPremiums + currentClaims + this.state.baseExpenses + this.state.fundValue
+                };
+            },
+            
+            // עדכון השפעות
+            updateImpacts() {
+                const premiumImpact = document.getElementById('slide6PremiumImpact');
+                const claimsImpact = document.getElementById('slide6ClaimsImpact');
+                const waitingImpact = document.getElementById('slide6WaitingImpact');
+                const eligibilityImpact = document.getElementById('slide6EligibilityImpact');
+                const fundImpact = document.getElementById('slide6FundImpact');
+
+                // חישוב הבסיס הנוכחי לאחר כל שינוי קודם
+                let currentClaims = this.state.baseClaims;
+                
+                // חישוב השפעת פרמיות
+                const premiumChange = (this.state.basePremiums * this.state.premiumChange / 100).toFixed(1);
+                
+                // חישוב השפעת הקטנת תביעות
+                const claimsChange = (currentClaims * this.state.claimsChange / 100).toFixed(1);
+                currentClaims *= (1 - this.state.claimsChange / 100);
+                
+                // חישוב השפעת תקופת המתנה
+                const waitingChange = (currentClaims * AppConfig.waitingPeriods[this.state.waitingPeriod].impact / 100).toFixed(1);
+                currentClaims *= (1 - AppConfig.waitingPeriods[this.state.waitingPeriod].impact / 100);
+                
+                // חישוב השפעת קיצור תקופת זכאות
+                const eligibilityChange = (currentClaims * AppConfig.eligibilityPeriods[this.state.eligibilityPeriod].impact / 100).toFixed(1);
+
+                // הצגת ההשפעות
+                if (premiumImpact) premiumImpact.textContent = `השפעה: +${Math.abs(premiumChange)} מיליארד ₪`;
+                if (claimsImpact) claimsImpact.textContent = `השפעה: +${Math.abs(claimsChange)} מיליארד ₪`;
+                if (waitingImpact) waitingImpact.textContent = `השפעה: +${Math.abs(waitingChange)} מיליארד ₪`;
+                if (eligibilityImpact) eligibilityImpact.textContent = `השפעה: +${Math.abs(eligibilityChange)} מיליארד ₪`;
+                if (fundImpact) fundImpact.textContent = `השפעה: +${this.state.fundValue} מיליארד ₪`;
+            },
+            
+            // יצירת גרפים
+            createCharts() {
+                this.createDeficitChart();
+                this.createTotalDeficitChart();
+            },
+            
+            // יצירת גרף גירעון לפי קופות
+            createDeficitChart() {
+                const ctx = document.getElementById('slide6DeficitChart');
+                if (!ctx) return;
+                
+                this.charts.deficit = new Chart(ctx.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['כללית', 'מכבי', 'לאומית', 'מאוחדת'],
+                        datasets: [{
+                            label: 'פרמיות',
+                            data: [23, 16, 2, 4],
+                            backgroundColor: '#22c55e',
+                            borderRadius: 8,
+                            borderSkipped: false
+                        }, {
+                            label: 'תביעות והוצאות',
+                            data: [-32, -21, -3, -5],
+                            backgroundColor: '#fb923c',
+                            borderRadius: 8,
+                            borderSkipped: false
+                        }, {
+                            label: 'גירעון',
+                            data: [-9, -5, -1, -1],
+                            backgroundColor: '#ef4444',
+                            borderRadius: 8,
+                            borderSkipped: false
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    padding: 12,
+                                    font: {
+                                        size: 12,
+                                        weight: '500'
+                                    },
+                                    usePointStyle: true
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'מיליארדי ₪'
+                                },
+                                grid: {
+                                    color: function(context) {
+                                        if (context.tick.value === 0) {
+                                            return '#94a3b8';
+                                        }
+                                        return 'rgba(0, 0, 0, 0.1)';
+                                    }
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                // הסתרת כל ה-datasets בהתחלה - רק בגרף קופות החולים
+                this.charts.deficit.data.datasets.forEach((dataset, index) => {
+                    const meta = this.charts.deficit.getDatasetMeta(index);
+                    meta.hidden = true;
+                });
+                this.charts.deficit.update();
+            },
+            
+            // יצירת גרף גירעון כולל
+            createTotalDeficitChart() {
+                const ctx = document.getElementById('slide6TotalDeficitChart');
+                if (!ctx) return;
+                
+                this.charts.totalDeficit = new Chart(ctx.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: [''],
+                        datasets: [{
+                            label: 'יתרת קרן קיימת',
+                            data: [0],
+                            backgroundColor: '#60a5fa',
+                            borderRadius: 8,
+                            borderSkipped: false
+                        }, {
+                            label: 'סה"כ פרמיות',
+                            data: [45],
+                            backgroundColor: '#22c55e',
+                            borderRadius: 8,
+                            borderSkipped: false
+                        }, {
+                            label: 'סה"כ תביעות והוצאות',
+                            data: [-61],
+                            backgroundColor: '#fb923c',
+                            borderRadius: 8,
+                            borderSkipped: false
+                        }, {
+                            label: 'גירעון כולל',
+                            data: [-16],
+                            backgroundColor: '#ef4444',
+                            borderRadius: 8,
+                            borderSkipped: false
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    padding: 12,
+                                    font: {
+                                        size: 12,
+                                        weight: '500'
+                                    },
+                                    usePointStyle: true
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'מיליארדי ₪'
+                                },
+                                min: -65,
+                                max: 65,
+                                grid: {
+                                    color: function(context) {
+                                        if (context.tick.value === 0) {
+                                            return '#94a3b8';
+                                        }
+                                        return 'rgba(0, 0, 0, 0.1)';
+                                    }
+                                },
+                                ticks: {
+                                    stepSize: 20
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        }
+                    }
+                });
+            },
+            
+            // עדכון גרפים
+            updateCharts() {
+                const results = this.calculateTotalDeficit();
+                
+                // עדכון הנתונים לפי הסדר החדש
+                if (this.charts.totalDeficit) {
+                    this.charts.totalDeficit.data.datasets[0].data = [results.fundValue];
+                    this.charts.totalDeficit.data.datasets[1].data = [results.premiums];
+                    this.charts.totalDeficit.data.datasets[2].data = [results.claimsAndExpenses];
+                    this.charts.totalDeficit.data.datasets[3].data = [results.total];
+                    
+                    // עדכון צבע וכותרת לפי התוצאה
+                    this.charts.totalDeficit.data.datasets[3].backgroundColor = results.total >= 0 ? '#15803d' : '#ef4444';
+                    this.charts.totalDeficit.data.datasets[3].label = results.total >= 0 ? 'עודף כולל' : 'גירעון כולל';
+                    
+                    this.charts.totalDeficit.update();
+                }
+                
+                // עדכון הטקסט המוצג
+                const summaryBox = document.querySelector('.slide6-summary-box');
+                const summaryTitle = document.querySelector('.slide6-summary-box h3');
+                const deficitElement = document.getElementById('slide6ProjectedDeficit');
+
+                if (summaryTitle && deficitElement && summaryBox) {
+                    if (results.total >= 0) {
+    summaryTitle.textContent = 'עודף צפוי לאחר הפעולות';
+    deficitElement.textContent = results.total.toFixed(1) + ' מיליארד ₪';
+    deficitElement.style.color = '#16a34a';  // ירוק יותר רך
+    deficitElement.className = 'slide6-deficit-value slide6-deficit-positive';
+    // צבעים עדינים יותר לעודף
+    summaryBox.style.background = 'linear-gradient(135deg, #fafafa, #f0fdf4)';
+    summaryBox.style.borderColor = '#d4d4d8';
+    summaryTitle.style.color = '#404040';
+} else {
+    summaryTitle.textContent = 'גירעון צפוי לאחר הפעולות';
+    deficitElement.textContent = Math.abs(results.total).toFixed(1) + ' מיליארד ₪';
+    deficitElement.style.color = '#dc2626';  // אדום יותר רך
+    deficitElement.className = 'slide6-deficit-value slide6-deficit-negative';
+    // צבעים עדינים יותר לגירעון
+    summaryBox.style.background = 'linear-gradient(135deg, #fafafa, #fef2f2)';
+    summaryBox.style.borderColor = '#d4d4d8';
+    summaryTitle.style.color = '#404040';
+}
+                }
+                
+                this.updateImpacts();
+            },
+            
+            // ניקוי גרפים
+            destroy() {
+                if (this.charts.deficit) {
+                    this.charts.deficit.destroy();
+                    this.charts.deficit = null;
+                }
+                if (this.charts.totalDeficit) {
+                    this.charts.totalDeficit.destroy();
+                    this.charts.totalDeficit = null;
+                }
+            }
+        };
+        
+        // Export Slide4
+        window.Slide4 = Slide4;
+        
+        /* ============================================ */
+        /* init.js - אתחול האפליקציה */
+        /* ============================================ */
+        
+        const App = {
+            // מצב האפליקציה
+            state: {
+                isInitialized: false,
+                currentSlide: 1,
+                slides: {},
+                isLoading: false
+            },
+            
+            // אתחול ראשי
+            init() {
+                console.log('Initializing presentation app...');
+                
+                // בדיקת תלויות
+                if (!this.checkDependencies()) {
+                    console.error('Missing dependencies');
+                    return;
+                }
+                
+                // אתחול רכיבים
+                this.initializeComponents();
+                
+                // הגדרת אירועים גלובליים
+                this.setupGlobalEvents();
+                
+                // סימון כמאותחל
+                this.state.isInitialized = true;
+                console.log('App initialized successfully');
+            },
+            
+            // בדיקת תלויות
+            checkDependencies() {
+                const dependencies = [
+                    { name: 'Chart.js', check: () => typeof Chart !== 'undefined' },
+                    { name: 'Navigation', check: () => typeof Navigation !== 'undefined' },
+                    { name: 'AppConfig', check: () => typeof AppConfig !== 'undefined' }
+                ];
+                
+                let allLoaded = true;
+                
+                dependencies.forEach(dep => {
+                    if (!dep.check()) {
+                        console.error(`Missing dependency: ${dep.name}`);
+                        allLoaded = false;
+                    }
+                });
+                
+                return allLoaded;
+            },
+            
+            // אתחול רכיבים
+            initializeComponents() {
+                // אתחול ניווט
+                if (Navigation) {
+                    Navigation.init();
+                }
+                
+                // אתחול שקפים
+                this.initializeSlides();
+            },
+            
+            // אתחול שקפים
+            initializeSlides() {
+                // רישום כל השקפים
+                this.state.slides = {
+                    1: { name: 'Opening', module: null },
+                    2: { name: 'Model', module: Slide2 },
+                    3: { name: 'Premium Calculator', module: Slide3 },
+                    4: { name: 'Deficit Analysis', module: Slide4 }
+                };
+            },
+            
+            // הגדרת אירועים גלובליים
+            setupGlobalEvents() {
+                // התאמת גודל חלון
+                window.addEventListener('resize', this.handleResize.bind(this));
+            },
+            
+            // טיפול בשינוי גודל חלון
+            handleResize() {
+                // עדכון גרפים אם צריך
+                if (this.state.currentSlide > 1) {
+                    const currentModule = this.state.slides[this.state.currentSlide].module;
+                    if (currentModule && currentModule.charts) {
+                        Object.values(currentModule.charts).forEach(chart => {
+                            if (chart) chart.resize();
+                        });
+                    }
+                }
+            }
+        };
+        
+        // אתחול כשה-DOM מוכן
+        document.addEventListener('DOMContentLoaded', () => {
+            // המתנה קצרה לוודא שכל הסקריפטים נטענו
+            setTimeout(() => {
+                App.init();
+            }, 100);
+        });
+        
+        // Export App
+        window.App = App;
+    </script>
+</body>
+</html>
+

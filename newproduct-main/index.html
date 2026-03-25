@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מסע הרפורמה - חוויה אינטראקטיבית</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/hero.css">
+    <link rel="stylesheet" href="styles/journey.css">
+    <link rel="stylesheet" href="styles/matrix.css">
+    <link rel="stylesheet" href="styles/animations.css">
+    <link rel="stylesheet" href="styles/responsive.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Status Tracker - חלון מעקב צף -->
+    <div id="statusTracker" class="status-tracker">
+        <button class="tracker-toggle" onclick="StatusTracker.toggle()">
+            <span id="toggleIcon">−</span>
+        </button>
+        <div class="tracker-content">
+            <div class="tracker-title">מצב המוצר הקיים</div>
+            <div class="tracker-year" id="currentYear">ינואר 2023</div>
+            
+            <div class="health-indicator">
+                <div class="health-bar good" id="healthBar"></div>
+            </div>
+            
+            <div id="trackerData">
+                <div class="tracker-item">
+                    <span class="tracker-label">מבוטחים:</span>
+                    <span class="tracker-value" id="insuredValue">4.5M</span>
+                </div>
+                <div class="tracker-item">
+                    <span class="tracker-label">פרמיה:</span>
+                    <span class="tracker-value state-good" id="premiumValue">=</span>
+                </div>
+                <div class="tracker-item">
+                    <span class="tracker-label">תגמולים:</span>
+                    <span class="tracker-value state-good" id="benefitValue">₪6,000</span>
+                </div>
+                <div class="tracker-item">
+                    <span class="tracker-label">ADL:</span>
+                    <span class="tracker-value state-good" id="adlValue">3/6</span>
+                </div>
+                <div class="tracker-item">
+                    <span class="tracker-label">רווחי חברות:</span>
+                    <span class="tracker-value state-critical" id="companyStatus">הפסד</span>
+                </div>
+                <div class="tracker-item">
+                    <span class="tracker-label">סיכון:</span>
+                    <span class="tracker-value state-good" id="riskValue">20/80</span>
+                </div>
+                <div class="tracker-item">
+                    <span class="tracker-label">המשכיות:</span>
+                    <span class="tracker-value state-good" id="continuityValue">קיימת</span>
+                </div>
+            </div>
+            
+            <div class="tracker-countdown" style="display: none;">
+                <div class="countdown-days" id="daysLeft">700</div>
+                <div class="countdown-label">ימים לסיום</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- רקע מקצועי -->
+    <div class="fixed-bg"></div>
+    <div class="decorative-bg"></div>
+    
+    <!-- קו המסע המרכזי -->
+    <div class="journey-line"></div>
+    
+    <!-- אינדיקטור התקדמות -->
+    <div id="progressIndicator"></div>
+
+    <!-- מסך פתיחה -->
+    <section id="heroSection"></section>
+
+    <!-- תחנות המסע -->
+    <div id="journeyStations"></div>
+
+    <!-- מסך סיום -->
+    <section id="finalSection"></section>
+
+    <!-- מטריצה מוסתרת -->
+    <div id="matrixOverlay"></div>
+
+    <!-- מסך פרטים מורחב -->
+    <div id="detailOverlay"></div>
+
+    <!-- JavaScript Files -->
+    <script src="js/data.js"></script>
+    <script src="js/components.js"></script>
+    <script src="js/journey.js"></script>
+    <script src="js/matrix.js"></script>
+    <script src="js/animations.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

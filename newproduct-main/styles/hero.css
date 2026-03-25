@@ -1,0 +1,563 @@
+/* Hero Section Styles - Clean and Refined */
+.hero-section {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 40px 20px;
+    /* רקע בהיר עם עומק ומעבר חלק */
+    background: linear-gradient(180deg, 
+        #ffffff 0%, 
+        #f8fafc 15%,
+        #f1f5f9 40%,
+        #f8fafc 60%,
+        #f1f5f9 85%,
+        #f8fafc 95%,
+        #f1f5f9 100%  /* מסתיים באותו צבע כמו המשך המסע */
+    );
+    overflow: hidden;
+}
+
+/* שכבת עומק עדינה מאוד */
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(ellipse at center, 
+        rgba(226, 232, 240, 0.3) 0%, 
+        transparent 70%
+    );
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* אלכסונים דקורטיביים לעומק - עדינים מאוד */
+.hero-section::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        repeating-linear-gradient(
+            45deg, 
+            transparent, 
+            transparent 35px, 
+            rgba(226, 232, 240, 0.03) 35px, 
+            rgba(226, 232, 240, 0.03) 70px
+        ),
+        repeating-linear-gradient(
+            -45deg, 
+            transparent, 
+            transparent 35px, 
+            rgba(203, 213, 225, 0.02) 35px, 
+            rgba(203, 213, 225, 0.02) 70px
+        );
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.5;
+}
+
+/* תוכן ראשי */
+.hero-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 1400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* לוגו עם אנימציה עדינה */
+.hero-logo-animated {
+    width: 120px;
+    height: auto;
+    opacity: 0;
+    margin-bottom: 35px;
+    animation: gentleFloat 2s ease-out forwards, continuousFloat 4s ease-in-out 2s infinite;
+    display: block;
+}
+
+@keyframes gentleFloat {
+    0% {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    50% {
+        opacity: 0.7;
+        transform: translateY(-5px) scale(1);
+    }
+    100% {
+        opacity: 0.9;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* אנימציית ריחוף מתמשכת */
+@keyframes continuousFloat {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+    }
+    25% {
+        transform: translateY(-8px) scale(1);
+    }
+    75% {
+        transform: translateY(5px) scale(1);
+    }
+}
+
+/* אפקט זוהר עדין על הלוגו */
+.hero-logo-animated::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 60%);
+    opacity: 0;
+    animation: softGlow 2s ease 1s forwards;
+    pointer-events: none;
+}
+
+@keyframes softGlow {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+    100% {
+        opacity: 0.5;
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+}
+
+/* כותרת ראשית */
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #0ea5e9 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 20px;
+    text-align: center;
+    opacity: 0;
+    animation: titleAppear 0.8s ease 0.3s forwards;
+}
+
+@keyframes titleAppear {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* כותרת משנה */
+.hero-subtitle {
+    font-size: 1.4rem;
+    color: #64748b;
+    margin-bottom: 60px;
+    text-align: center;
+    font-weight: 400;
+    opacity: 0;
+    animation: subtitleAppear 0.8s ease 0.5s forwards;
+}
+
+@keyframes subtitleAppear {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Timeline Container */
+.timeline-container {
+    width: 100%;
+    margin-bottom: 60px;
+    position: relative;
+    padding: 60px 0;
+}
+
+/* מסלול הזמן - עובר במרכז האייקונים */
+.timeline-track {
+    position: absolute;
+    top: 50%;
+    right: 5%;
+    left: 5%;
+    height: 2px;
+    background: rgba(148, 163, 184, 0.3);  /* התאמה לרקע הכהה */
+    transform: translateY(-35px);
+    border-radius: 2px;
+    opacity: 0;
+    animation: trackAppear 0.8s ease 0.7s forwards;
+}
+
+@keyframes trackAppear {
+    to {
+        opacity: 1;
+    }
+}
+
+/* אנימציית זרימה מתחלפת */
+.timeline-flow {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, 
+        transparent,
+        #3b82f6 20%,
+        #0ea5e9 80%,
+        transparent);
+    animation: flowFillEmpty 5s ease 1.5s infinite;
+}
+
+@keyframes flowFillEmpty {
+    0% {
+        width: 0;
+        opacity: 0;
+        right: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    45% {
+        width: 100%;
+        opacity: 1;
+        right: 0;
+    }
+    50% {
+        width: 100%;
+        opacity: 1;
+        right: 0;
+    }
+    95% {
+        width: 0;
+        opacity: 1;
+        right: 100%;
+    }
+    100% {
+        width: 0;
+        opacity: 0;
+        right: 0;
+    }
+}
+
+/* תחנות הזמן */
+.timeline-stations {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+    padding: 0 40px;
+}
+
+.timeline-station {
+    position: relative;
+    opacity: 0;
+    animation: stationAppear 0.6s ease forwards;
+    transition: transform 0.3s ease;
+}
+
+@keyframes stationAppear {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.timeline-station:hover {
+    transform: translateY(-5px);
+}
+
+.timeline-station.active .station-bubble {
+    transform: scale(1.1);
+    border-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.08);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.25);
+}
+
+/* תוכן התחנה */
+.station-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+/* בועת האייקון */
+.station-bubble {
+    width: 75px;
+    height: 75px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 3px solid rgba(226, 232, 240, 0.6);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.station-icon {
+    font-size: 2rem;
+    z-index: 2;
+}
+
+/* מידע על התחנה */
+.station-info {
+    text-align: center;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: infoAppear 0.5s ease 1s forwards;
+}
+
+@keyframes infoAppear {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.station-date {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+
+.station-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+/* כפתור התחלה נקי */
+.btn-start-journey {
+    position: relative;
+    padding: 18px 50px;
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    border: none;
+    border-radius: 50px;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    overflow: hidden;
+    opacity: 0;
+    animation: btnAppear 0.8s ease 1.5s forwards;
+    box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
+}
+
+@keyframes btnAppear {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.btn-text {
+    z-index: 2;
+}
+
+.btn-arrow {
+    font-size: 1.3rem;
+    transition: transform 0.3s ease;
+    z-index: 2;
+}
+
+.btn-start-journey:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(59, 130, 246, 0.4);
+    background: linear-gradient(135deg, #1d4ed8, #2563eb);
+}
+
+.btn-start-journey:hover .btn-arrow {
+    transform: translateX(-5px);
+    animation: arrowPulse 0.6s ease;
+}
+
+@keyframes arrowPulse {
+    0%, 100% {
+        transform: translateX(-5px);
+    }
+    50% {
+        transform: translateX(-10px);
+    }
+}
+
+/* Hero Footer - Same elegant style as Matrix Footer */
+.hero-footer {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 100;
+    opacity: 0;
+    animation: fadeInUp 0.8s ease 2s forwards;
+}
+
+/* קו דקורטיבי עדין */
+.hero-footer::before {
+    content: '';
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent,
+        rgba(148, 163, 184, 0.2) 20%,
+        rgba(148, 163, 184, 0.3) 50%,
+        rgba(148, 163, 184, 0.2) 80%,
+        transparent
+    );
+}
+
+.hero-footer-text {
+    font-size: 0.9rem;
+    color: #64748b;
+    font-weight: 500;
+    opacity: 0.85;
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 20px;
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.8) 0%, 
+        rgba(248, 250, 252, 0.6) 100%);
+    border-radius: 20px;
+    border: 1px solid rgba(226, 232, 240, 0.3);
+    backdrop-filter: blur(10px);
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+/* אייקון דקורטיבי עדין */
+.hero-footer-text::before {
+    content: '◈';
+    font-size: 0.7rem;
+    color: #3b82f6;
+    opacity: 0.6;
+}
+
+.hero-footer-text::after {
+    content: '◈';
+    font-size: 0.7rem;
+    color: #3b82f6;
+    opacity: 0.6;
+}
+
+/* אפקט hover עדין */
+.hero-footer-text:hover {
+    opacity: 1;
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.95) 0%, 
+        rgba(248, 250, 252, 0.85) 100%);
+    border-color: rgba(59, 130, 246, 0.2);
+    transform: translateY(-1px);
+}
+
+.hero-footer-inline {
+    margin-top: 60px;
+    text-align: center;
+    opacity: 0;
+    animation: fadeInUp 0.8s ease 2s forwards;
+}
+
+/* Mobile Responsive for Hero Footer */
+@media (max-width: 768px) {
+    .hero-footer {
+        bottom: 15px;
+    }
+    
+    .hero-footer::before {
+        width: 60px;
+    }
+    
+    .hero-footer-text {
+        font-size: 0.8rem;
+        padding: 6px 15px;
+        gap: 6px;
+    }
+    
+    .hero-footer-text::before,
+    .hero-footer-text::after {
+        font-size: 0.6rem;
+    }
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+    .hero-title {
+        font-size: 3rem;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .timeline-stations {
+        flex-wrap: wrap;
+        gap: 30px;
+        justify-content: center;
+        padding: 0 20px;
+    }
+    
+    .station-path {
+        display: none;
+    }
+    
+    .timeline-track {
+        display: none;
+    }
+}
+
+@media (max-width: 575px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .station-bubble {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .station-icon {
+        font-size: 1.5rem;
+    }
+}

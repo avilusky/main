@@ -1,0 +1,551 @@
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Heebo', sans-serif;
+    background: #f8fafc;
+    color: #1a202c;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Background Elements */
+.fixed-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, 
+        #ffffff 0%, 
+        #f8fafc 20%, 
+        #f1f5f9 50%, 
+        #f8fafc 80%, 
+        #ffffff 100%
+    );
+    z-index: -2;
+}
+
+.decorative-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+/* Journey Line - מסתיים לפני נקודת ההכרעה */
+.journey-line {
+    position: absolute;
+    left: 50%;
+    top: 100vh;
+    width: 4px;
+    height: 300vh; /* קיצרתי מ-500vh ל-300vh כדי שיסתיים לפני המסך האחרון */
+    transform: translateX(-50%);
+    z-index: 0;
+}
+
+.journey-line::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg,
+        rgba(59, 130, 246, 0.15) 0%,
+        rgba(59, 130, 246, 0.25) 50%,
+        rgba(59, 130, 246, 0.15) 90%,
+        transparent 100%  /* מוסיף fade out בסוף */
+    );
+    border-radius: 2px;
+}
+
+.journey-line::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 1px;
+    width: 2px;
+    height: 100%;
+    background: 
+        repeating-linear-gradient(
+            180deg,
+            transparent,
+            transparent 30px,
+            rgba(59, 130, 246, 0.4) 30px,
+            rgba(59, 130, 246, 0.4) 32px
+        );
+    opacity: 0.6;
+}
+
+/* Status Tracker - Floating Side Panel עם עמעום בלי טשטוש */
+.status-tracker {
+    position: fixed;
+    left: 20px;
+    top: 54%;
+    transform: translateY(-50%);
+    width: 170px;
+    /* רקע עם שקיפות בלי backdrop-filter */
+    background: rgba(255, 255, 255, 0.88);
+    /* מסיר לגמרי את הטשטוש */
+    /* backdrop-filter: blur(5px); - מבוטל */
+    /* -webkit-backdrop-filter: blur(5px); - מבוטל */
+    border: 1px solid rgba(59, 130, 246, 0.1);
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    z-index: 90;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    /* עמעום חזק יותר */
+    opacity: 0.65; /* הורדתי ל-0.65 */
+}
+
+/* התבהרות בhover */
+.status-tracker:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+}
+
+/* עמעום חזק כשלא בפוקוס */
+.status-tracker:not(:hover):not(:focus-within) {
+    opacity: 0.65
+}
+
+/* Minimized State */
+.status-tracker.minimized {
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.status-tracker.minimized .tracker-content {
+    display: none;
+}
+
+/* Toggle Button */
+.tracker-toggle {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    width: 20px;
+    height: 20px;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    transition: all 0.2s ease;
+}
+
+.tracker-toggle:hover {
+    transform: scale(1.1);
+    background: #2563eb;
+}
+
+/* Tracker Content */
+.tracker-content {
+    margin-top: 20px;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.tracker-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #1e40af;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.tracker-year {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #2563eb;
+    text-align: center;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+}
+
+/* Tracker Items */
+.tracker-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 3px 0;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+}
+
+.tracker-item:last-child {
+    border-bottom: none;
+}
+
+.tracker-label {
+    font-size: 0.8rem; /* הגדלתי מ-0.75rem */
+    color: #64748b;
+    font-weight: 500;
+}
+
+.tracker-value {
+    font-size: 0.9rem; /* הגדלתי מ-0.85rem */
+    font-weight: 600;
+    color: #1e293b;
+    transition: color 0.3s ease;
+}
+
+/* Color States for Values */
+.tracker-value.state-good {
+    color: #059669;
+}
+
+.tracker-value.state-warning {
+    color: #f59e0b;
+}
+
+.tracker-value.state-bad {
+    color: #f97316;
+}
+
+.tracker-value.state-critical {
+    color: #dc2626;
+}
+
+.tracker-value.positive {
+    color: #059669;
+}
+
+/* Countdown Section */
+.tracker-countdown {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 2px solid rgba(59, 130, 246, 0.2);
+    text-align: center;
+}
+
+.countdown-days {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #2563eb;
+    transition: all 0.3s ease;
+}
+
+.countdown-days.warning {
+    color: #f59e0b;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.countdown-days.critical {
+    color: #dc2626;
+    animation: pulse 1s ease-in-out infinite;
+}
+
+.countdown-label {
+    font-size: 0.85rem;
+    color: #64748b;
+font-weight: 500; /* הוספתי משקל לגופן */
+}
+
+/* Health Indicator Bar */
+.health-indicator {
+    width: 100%;
+    height: 4px;
+    background: #e5e7eb;
+    border-radius: 2px;
+    margin: 8px 0;
+    overflow: hidden;
+}
+
+.health-bar {
+    height: 100%;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 2px;
+}
+
+.health-bar.good {
+    width: 100%;
+    background: linear-gradient(90deg, #22c55e, #16a34a);
+}
+
+.health-bar.warning {
+    width: 75%;
+    background: linear-gradient(90deg, #fbbf24, #f59e0b);
+}
+
+.health-bar.bad {
+    width: 50%;
+    background: linear-gradient(90deg, #fb923c, #f97316);
+}
+
+.health-bar.critical {
+    width: 25%;
+    background: linear-gradient(90deg, #ef4444, #dc2626);
+    animation: criticalPulse 1s ease-in-out infinite;
+}
+
+/* Animations for Status Tracker */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+
+@keyframes criticalPulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scaleX(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scaleX(0.95);
+    }
+}
+
+/* Progress Indicator - Refined Version */
+.progress-indicator {
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 15px 8px;
+    background: rgba(255, 255, 255, 0.75);
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+    opacity: 0.5;
+}
+
+.progress-indicator:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.progress-indicator::before {
+    content: '';
+    position: absolute;
+    top: 25px;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    background: linear-gradient(180deg, 
+        transparent,
+        rgba(203, 213, 225, 0.3) 20%,
+        rgba(203, 213, 225, 0.3) 80%,
+        transparent
+    );
+    z-index: -1;
+}
+
+.progress-dot {
+    width: 10px;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1.5px solid rgba(203, 213, 225, 0.6);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.progress-dot:hover {
+    transform: scale(1.4);
+    border-color: rgba(59, 130, 246, 0.6);
+    background: #ffffff;
+}
+
+.progress-dot.active {
+    background: #3b82f6;
+    border-color: rgba(37, 99, 235, 0.8);
+    transform: scale(1.3);
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.3);
+}
+
+.progress-dot.active::after {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    right: -6px;
+    bottom: -6px;
+    border-radius: 50%;
+    border: 1px solid rgba(59, 130, 246, 0.4);
+    animation: subtlePulse 2s ease-in-out infinite;
+}
+
+@keyframes subtlePulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.5;
+    }
+}
+
+.progress-dot.completed {
+    background: rgba(16, 185, 129, 0.8);
+    border-color: rgba(5, 150, 105, 0.6);
+    width: 8px;
+    height: 8px;
+}
+
+.progress-tooltip {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.75);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.progress-dot:hover .progress-tooltip {
+    opacity: 1;
+}
+
+/* Buttons */
+.btn-primary {
+    padding: 20px 60px;
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    border: none;
+    border-radius: 50px;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    box-shadow: 0 10px 40px rgba(37, 99, 235, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 50px rgba(59, 130, 246, 0.5);
+    background: linear-gradient(135deg, #1d4ed8, #2563eb);
+}
+
+.btn-secondary {
+    padding: 15px 35px;
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    border: none;
+    border-radius: 30px;
+    color: white;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
+}
+
+.btn-secondary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(37, 99, 235, 0.4);
+    background: linear-gradient(135deg, #1d4ed8, #2563eb);
+}
+
+/* Close Button */
+.close-btn {
+    width: 50px;
+    height: 50px;
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 2rem;
+    color: #64748b;
+}
+
+.close-btn:hover {
+    background: #f8fafc;
+    border-color: #3b82f6;
+    color: #3b82f6;
+    transform: rotate(90deg);
+}
+
+/* Section Shadows for Titles */
+.title-shadow::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200%;
+    height: 250%;
+    background: radial-gradient(ellipse at center,
+        rgba(255, 255, 255, 0.98) 0%,
+        rgba(255, 255, 255, 0.95) 15%,
+        rgba(255, 255, 255, 0.9) 30%,
+        rgba(255, 255, 255, 0.7) 45%,
+        rgba(255, 255, 255, 0.4) 60%,
+        transparent 75%
+    );
+    filter: blur(50px);
+    z-index: -1;
+}
+
+/* Utility Classes */
+.text-center { text-align: center; }
+.mb-20 { margin-bottom: 20px; }
+.mb-30 { margin-bottom: 30px; }
+.mb-40 { margin-bottom: 40px; }
+.mb-60 { margin-bottom: 60px; }
+
+/* Responsive for Status Tracker */
+@media (max-width: 991px) {
+    .status-tracker {
+        left: 10px;
+        width: 185px; /* הגדלתי מ-175px ל-185px */
+    }
+    
+    .progress-indicator {
+        right: 15px;
+        padding: 15px 8px;
+        gap: 15px;
+    }
+}
+
+@media (max-width: 767px) {
+    .status-tracker,
+    .progress-indicator {
+        display: none;
+    }
+}

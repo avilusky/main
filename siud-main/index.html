@@ -1,0 +1,3862 @@
+<!DOCTYPE html>
+<html dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>מתווה לאסדרת ביטוחי הסיעוד</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            overflow-x: clip;
+    overflow-y: scroll;
+        }
+
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            /*overflow: hidden;*/
+        }
+.slide {
+    width: 100%;
+    min-height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    display: none;
+    transform: translateX(100%);
+    transition: all 0.5s ease-in-out;
+    overflow-y: auto
+}
+
+.slide.active {
+    opacity: 1;
+    transform: translateX(0);
+    display: block;
+    z-index: 2;
+}
+
+.slide.prev {
+    transform: translateX(-100%);
+    opacity: 0;
+    z-index: 1;
+}
+
+.slide.next {
+    transform: translateX(100%);
+    opacity: 0;
+    z-index: 1;
+}
+
+.slide-logo {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 80px;
+display: none;  /* מוסתר כברירת מחדל */
+    /*opacity: 0.5;*/
+    filter: opacity(0.5);
+    /*transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;*/
+    z-index: 10;
+    animation: slide_logo_fade 2s ease-out forwards;
+}
+
+
+@keyframes slide_logo_fade {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+        /* Navigation Controls */
+.nav-button {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: none;
+    width: 50px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    pointer-events: auto;  /* זה חשוב */
+    opacity: 0.3;
+}
+
+.nav-controls {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.nav-controls:hover .nav-button {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.6);
+}
+
+#prevSlide {
+    right: 0;
+    border-radius: 8px 0 0 8px;
+}
+
+#nextSlide {
+    left: 0;
+    border-radius: 0 8px 8px 0;
+}
+
+.nav-button:before {
+    content: '';
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    border-top: 2px solid #2563eb;
+    border-right: 2px solid #2563eb;
+    transition: all 0.3s ease;
+}
+
+#prevSlide:before {
+    transform: rotate(45deg);
+    margin-right: 5px;
+}
+
+#nextSlide:before {
+    transform: rotate(-135deg);
+    margin-left: 5px;
+}
+
+.nav-button:hover {
+    background: rgba(255, 255, 255, 0.9);
+    width: 60px;
+}
+
+.nav-button:disabled {
+    opacity: 0 !important;
+    cursor: default;
+}
+
+.slide-indicator {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 13px;
+    color: #1e293b;
+    pointer-events: auto;  /* זה חשוב */
+    opacity: 0.3;
+    transition: opacity 0.3s ease;
+    direction: rtl;
+    letter-spacing: 0.5px;
+}
+
+.nav-controls:hover .slide-indicator {
+    opacity: 1;
+}
+
+@media (max-width: 768px) {
+    .nav-button {
+        width: 40px;
+        height: 60px;
+        opacity: 0.6;
+    }
+    
+    .nav-button:hover {
+        width: 45px;
+    }
+    
+.slide-indicator {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 13px;
+    color: #1e293b;
+    pointer-events: auto;
+    opacity: 0.3;
+    transition: opacity 0.3s ease;
+    direction: rtl;
+    letter-spacing: 0.5px;
+}
+}
+        /* Slide 1 Styles */
+        .slide_one_body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        #slide1 {
+            background: linear-gradient(135deg, #f0f7ff 0%, #e6f3ff 100%);
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            height: 100vh;
+        }
+
+        .slide_one_content_wrapper {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -75%);
+            width: 100%;
+            max-width: 1200px;
+            text-align: center;
+            z-index: 2;
+        }
+
+        .slide_one_logo_container {
+            margin-bottom: 2.5rem;
+            opacity: 0;
+            animation: slide_one_fadeInSlideDown 1s ease-out forwards;
+        }
+
+        .slide_one_logo {
+            width: 120px;
+            height: auto;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+            transform: translateY(-20px);
+            animation: slide_one_float 6s ease-in-out infinite;
+        }
+
+        .slide_one_text_content {
+            opacity: 0;
+            animation: slide_one_fadeInSlideUp 1s ease-out forwards;
+            animation-delay: 0.5s;
+            padding: 1rem;
+        }
+
+        .slide_one_main_title {
+            font-size: 4rem;
+            font-weight: 700;
+            color: #1e40af;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            text-shadow: 0 2px 10px rgba(37, 99, 235, 0.2);
+            position: relative;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slide_one_fadeInSlideUp 1s ease-out forwards;
+        }
+.slide_one_main_title::after {
+    content: '';
+    position: absolute;
+    bottom: -0.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 3px;
+    background: linear-gradient(to right, transparent, #3b82f6, transparent);
+    opacity: 0;
+    animation: slide_one_fadeIn 1.5s ease-out forwards;
+    animation-delay: 1s;
+}
+
+        .slide_one_subtitle {
+            font-size: 2.2rem;
+            color: #1e293b;
+            font-weight: 500;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slide_one_fadeInSlideUp 1s ease-out forwards;
+            animation-delay: 1s;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .slide_one_decoration {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .slide_one_decoration_1 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            top: -200px;
+            right: -200px;
+            animation: slide_one_float 10s ease-in-out infinite;
+        }
+
+        .slide_one_decoration_2 {
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(135deg, #818cf8, #6366f1);
+            bottom: -250px;
+            left: -250px;
+            animation: slide_one_float 12s ease-in-out infinite reverse;
+        }
+
+        /* Slide 2 Styles */
+        .slide2-body {
+            background: #f0f7ff;
+            min-height: 100vh;
+            display: flex;
+    align-items: flex-start;  /* זה השינוי */
+            justify-content: center;
+            padding: 1.5rem;
+    padding-bottom: 100px;  /* זה נוסף */
+        }
+
+        .slide2-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            width: 100%;
+            max-width: 1400px;
+            padding: 1.75rem;
+            margin: 0 auto;
+        }
+
+        .slide2-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1.25rem;
+            background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .slide2-title h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(to left, #0284c7, #2563eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .slide2-title h2 {
+            font-size: 1.1rem;
+            color: #475569;
+            font-weight: 500;
+        }
+
+        .slide2-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin: 1.25rem 0;
+        }
+
+        .slide2-card {
+            background: white;
+            padding: 1.25rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.06);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid #e2e8f0;
+            height: auto;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide2-card h3 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+        }
+
+        .slide2-card h3 small {
+            font-weight: normal;
+            opacity: 0.8;
+        }
+
+        .slide2-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .slide2-card h3 {
+            font-size: 1.1rem;
+            color: #1e293b;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .slide2-chart-container {
+            width: 100%;
+            height: 300px;
+            position: relative;
+            margin-top: 0.5rem;
+            padding: 1rem;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .slide2-chart-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            min-height: 300px;
+        }
+
+.slide2-dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    padding: 20px;
+}
+
+.slide2-dialog-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    max-width: 800px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+.slide2-dialog-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.slide2-dialog-description {
+    color: #475569;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.slide2-dialog-close {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #64748b;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+        .slide3-body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f7ff;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .slide3-slide {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            width: 100%;
+            max-width: 1400px;
+            padding: 1.75rem;
+            margin: 0 auto;
+        }
+
+        .slide3-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1.25rem;
+            background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .slide3-title h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(to left, #0284c7, #2563eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .slide3-title h2 {
+            font-size: 1.1rem;
+            color: #475569;
+            font-weight: 500;
+        }
+
+        .slide3-model-stages {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .slide3-stage-card {
+            padding: 1.25rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.06);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid #e2e8f0;
+        }
+
+        .slide3-stage-card.slide3-savings {
+            background: linear-gradient(145deg, #ffffff, #f0fdf4);
+            border: 2px solid #22c55e;
+            box-shadow: 0 4px 6px rgba(34, 197, 94, 0.1);
+        }
+
+        .slide3-stage-card.slide3-insurance {
+            background: linear-gradient(145deg, #ffffff, #f0f7ff);
+            border: 2px solid #3b82f6;
+            box-shadow: 0 4px 6px rgba(59, 130, 246, 0.1);
+        }
+
+        .slide3-stage-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .slide3-stage-card h3 {
+            font-size: 1.2rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid;
+        }
+
+        .slide3-stage-card.slide3-savings h3 {
+            color: #16a34a;
+            border-bottom-color: #22c55e;
+        }
+
+        .slide3-stage-card.slide3-insurance h3 {
+            color: #2563eb;
+            border-bottom-color: #3b82f6;
+        }
+
+        .slide3-feature-list {
+            list-style: none;
+        }
+
+        .slide3-feature-list li {
+            background: white;
+            margin-bottom: 0.5rem;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .slide3-stage-card.slide3-savings .slide3-feature-list li {
+            border-right: 3px solid #22c55e;
+        }
+
+        .slide3-stage-card.slide3-insurance .slide3-feature-list li {
+            border-right: 3px solid #3b82f6;
+        }
+
+        .slide3-feature-list li:hover {
+            transform: translateX(-3px);
+        }
+
+        .slide3-stage-card.slide3-savings .slide3-feature-list strong {
+            color: #16a34a;
+        }
+
+        .slide3-stage-card.slide3-insurance .slide3-feature-list strong {
+            color: #2563eb;
+        }
+
+        .slide3-feature-list strong {
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .slide3-savings-goals {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            background: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            margin-top: 0.25rem;
+            margin-right: 0.5rem;
+        }
+
+        .slide3-savings-goal-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .slide3-savings-goal-item:first-child {
+            position: relative;
+        }
+
+        .slide3-savings-goal-item:first-child::after {
+            content: "";
+            position: absolute;
+            right: -0.75rem;
+            height: 70%;
+            width: 1px;
+            background: #e2e8f0;
+        }
+
+        .slide3-savings-goal-label {
+            font-size: 0.9rem;
+            color: #6366f1;
+            font-weight: 500;
+        }
+
+        .slide3-savings-goal-item.slide3-women .slide3-savings-goal-label {
+            color: #8b5cf6;
+        }
+
+        .slide3-savings-goal-amount {
+            font-weight: 600;
+            font-size: 0.95rem;
+            background: linear-gradient(to right, #6366f1, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .slide3-savings-goal-item.slide3-women .slide3-savings-goal-amount {
+            background: linear-gradient(to right, #8b5cf6, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .slide3-guarantees {
+            background: linear-gradient(145deg, #ffffff, #fffbeb);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-top: 1.5rem;
+            border: 2px solid #fbbf24;
+        }
+
+        .slide3-guarantees h3 {
+            color: #b45309;
+            font-size: 1.1rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #fbbf24;
+        }
+
+        .slide3-guarantee-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .slide3-guarantee-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 6px;
+            border: 1px solid #fcd34d;
+            transition: all 0.3s ease;
+        }
+
+        .slide3-guarantee-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .slide3-guarantee-item h4 {
+            color: #d97706;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .slide3-guarantee-item p {
+            color: #57534e;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .slide3-tooltip-trigger {
+            position: relative;
+            cursor: help;
+        }
+
+        .slide3-tooltip-trigger::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            right: 50%;
+            transform: translateX(50%);
+            padding: 0.5rem 1rem;
+            background: rgba(254, 252, 232, 0.98);
+            border: 1px solid #fef08a;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: #854d0e;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+            z-index: 10;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .slide3-tooltip-trigger:hover::after {
+            opacity: 1;
+            visibility: visible;
+            bottom: calc(100% + 5px);
+        }
+
+        .slide3-tooltip-trigger.slide3-long::after {
+            white-space: normal;
+            width: max-content;
+            max-width: 200px;
+            text-align: center;
+        }
+
+        .slide3-dialog-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 20px;
+            overflow: visible;
+overflow-x: clip;
+        }
+
+        .slide3-dialog-overlay * {
+            overflow: visible;
+        }
+
+        .slide3-dialog-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            margin: auto;
+            transform: none;
+            direction: rtl;
+        }
+
+        .slide3-dialog-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .slide3-dialog-description {
+            color: #475569;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .slide3-dialog-chart {
+            height: 400px;
+            margin: 2rem 0;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
+        .slide3-dialog-close {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #64748b;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .slide3-dialog-close:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .slide3-dialog-trigger {
+            color: #2563eb;
+            text-decoration: underline;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .slide3-dialog-trigger:hover {
+            color: #1d4ed8;
+        }
+
+        .slide3-premium-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .slide3-premium-table th, 
+        .slide3-premium-table td {
+            padding: 1rem;
+            text-align: right;
+            border-bottom: 1px solid #eee;
+        }
+
+        .slide3-premium-table th {
+            background: #f8f9fa;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .slide3-premium-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .slide3-dialog-description ol {
+            padding-right: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .slide3-dialog-description ol li {
+            margin-bottom: 0.75rem;
+            line-height: 1.6;
+        }
+
+        .slide4-body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f7ff;
+            min-height: 100vh;
+            /*display: flex;*/
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .slide4-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            width: 100%;
+            max-width: 1400px;
+            padding: 1.75rem;
+            margin: 0 auto;
+        }
+
+        .slide4-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1.25rem;
+            background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .slide4-title h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(to left, #0284c7, #2563eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .slide4-title h2 {
+            font-size: 1.1rem;
+            color: #475569;
+            font-weight: 500;
+        }
+
+        .slide4-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 1.25rem 0;
+        }
+
+        .slide4-card {
+            background: white;
+            padding: 1.25rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.06);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid #e2e8f0;
+        }
+
+        .slide4-card h3 {
+            color: #1e293b;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .slide4-target-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #2563eb;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .slide4-parameters-list {
+            list-style: none;
+        }
+
+        .slide4-parameters-list li {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem;
+            border-bottom: 1px solid #e2e8f0;
+            color: #475569;
+        }
+
+        .slide4-formula-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .slide4-formula-section h3 {
+            color: #1e293b;
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .slide4-formula-card {
+            border: 1px solid #e2e8f0;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            background: #f8fafc;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .slide4-formula-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .slide4-formula-header {
+            font-size: 1.1rem;
+            color: #1e40af;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .slide4-formula-container {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.3rem;
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .slide4-formula-number {
+            font-family: 'Times New Roman', serif;
+            color: #64748b;
+            font-size: 1.1rem;
+            min-width: 2rem;
+        }
+
+        .slide4-formula {
+            flex-grow: 1;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .slide4-formula-explanation {
+            margin-top: 0.75rem;
+            padding: 0.75rem;
+            background: #f0f7ff;
+            border-right: 4px solid #3b82f6;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            color: #1e3a8a;
+            line-height: 1.5;
+            display: none;
+        }
+
+        .slide4-parameters {
+            margin-top: 0.75rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .slide4-formula-card.active .slide4-formula-explanation,
+        .slide4-formula-card.active .slide4-parameters {
+            display: block;
+        }
+
+        .slide4-parameters-title {
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 0.5rem;
+        }
+
+        .slide4-parameter-item {
+            display: flex;
+            gap: 1rem;
+            padding: 0.3rem;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+
+        .slide4-parameter-symbol {
+            font-family: 'Times New Roman', serif;
+            font-style: italic;
+            color: #1e40af;
+            min-width: 2rem;
+        }
+
+        .slide4-parameter-description {
+            color: #475569;
+        }
+
+        .slide4-note-section {
+            background: #fff3cd;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+        }
+
+        .slide4-note-section h3 {
+            color: #856404;
+            margin-bottom: 1rem;
+        }
+
+        .slide4-note-section ul {
+            list-style: disc;
+            margin-right: 1.5rem;
+            color: #666;
+        }
+
+        .slide4-note-section li {
+            margin: 0.5rem 0;
+        }
+
+
+/* Slide 5 Styles */
+.slide5-body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f0f7ff;
+    min-height: 100vh;
+    /*display: flex;*/
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+}
+
+
+        .slide5-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            width: 100%;
+            max-width: 1400px;
+            padding: 1.75rem;
+            margin: 0 auto;
+        }
+
+        .slide5-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1.25rem;
+            background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .slide5-title h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(to left, #0284c7, #2563eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .slide5-title h2 {
+            font-size: 1.1rem;
+            color: #475569;
+            font-weight: 500;
+        }
+
+        .slide5-grid {
+            display: grid;
+            grid-template-columns: 35% 65%;
+            gap: 1.5rem;
+            margin: 1.25rem 0;
+        }
+
+        .slide5-card {
+            background: white;
+            padding: 1.25rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.06);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid #e2e8f0;
+        }
+
+        .slide5-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .slide5-control-group {
+            margin-bottom: 1rem;
+        }
+
+        .slide5-control-group label {
+            display: block;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            color: #1e293b;
+            font-weight: 500;
+        }
+
+.slide5-range {
+            width: 100%;
+            margin: 0.5rem 0;
+            -webkit-appearance: none;
+            background: transparent;
+        }
+        
+        .slide5-range::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(to right, #dbeafe 0%, #93c5fd 100%);
+            border-radius: 4px;
+            border: none;
+        }
+        
+        .slide5-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #2563eb;
+            cursor: pointer;
+            margin-top: -6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.2s ease-in-out;
+        }
+        
+        .slide5-range::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+        }
+        
+        .slide5-range::-moz-range-track {
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(to right, #dbeafe 0%, #93c5fd 100%);
+            border-radius: 4px;
+            border: none;
+        }
+        
+        .slide5-range::-moz-range-thumb {
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #2563eb;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.2s ease-in-out;
+        }
+        
+        .slide5-range::-moz-range-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+        }
+
+        .slide5-age-display {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #2563eb;
+            font-weight: 600;
+            margin: 0.5rem 0;
+        }
+
+        .slide5-gender-buttons {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .slide5-gender-button {
+            padding: 0.5rem 1.5rem;
+            border: none;
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            width: 100px;
+        }
+
+        .slide5-gender-button.active {
+            background: #2563eb;
+            color: white;
+        }
+
+        .slide5-gender-button:not(.active) {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        .slide5-summary-box {
+            background: #f0f9ff;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .slide5-summary-box h3 {
+            color: #2563eb;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .slide5-summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 0.4rem 0;
+            padding: 0.4rem;
+            background: white;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .slide5-summary-item span:last-child {
+            font-weight: 600;
+            color: #2563eb;
+        }
+
+        .slide5-charts-container {
+            display: grid;
+            grid-template-rows: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .slide5-chart-wrapper {
+            position: relative;
+            height: 300px;
+        }
+
+        .slide5-chart-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .slide5-note {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #856404;
+        }
+
+        .slide6-body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f7ff;
+            min-height: 100vh;
+            /*display: flex;*/
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .slide6-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            width: 100%;
+            max-width: 1400px;
+            padding: 1.75rem;
+            margin: 0 auto;
+        }
+
+        .slide6-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1.25rem;
+            background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .slide6-title h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(to left, #0284c7, #2563eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .slide6-title h2 {
+            font-size: 1.1rem;
+            color: #475569;
+            font-weight: 500;
+        }
+
+        .slide6-grid {
+            display: grid;
+            grid-template-columns: 35% 65%;
+            gap: 1.5rem;
+            margin: 1.25rem 0;
+        }
+
+        .slide6-card {
+            background: white;
+            padding: 1.25rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.06);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid #e2e8f0;
+        }
+
+        .slide6-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .slide6-control-group {
+            margin-bottom: 1rem;
+        }
+
+        .slide6-control-group label {
+            display: block;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            color: #1e293b;
+            font-weight: 500;
+        }
+
+        .slide6-range {
+            width: 100%;
+            margin: 0.5rem 0;
+            -webkit-appearance: none;
+            background: transparent;
+        }
+
+        .slide6-range::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(to right, #dbeafe 0%, #93c5fd 100%);
+            border-radius: 4px;
+            border: none;
+        }
+
+        .slide6-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #2563eb;
+            cursor: pointer;
+            margin-top: -6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.2s ease-in-out;
+        }
+
+        .slide6-summary-box {
+            background: #f0f9ff;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .slide6-summary-box h3 {
+            color: #2563eb;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .slide6-summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 0.4rem 0;
+            padding: 0.4rem;
+            background: white;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .slide6-summary-item span:last-child {
+            font-weight: 600;
+            color: #2563eb;
+        }
+
+        .slide6-charts-container {
+            display: grid;
+            grid-template-rows: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .slide6-chart-wrapper {
+            position: relative;
+            height: 300px;
+        }
+
+        .slide6-chart-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1rem;
+            text-align: center;
+
+        }
+
+        .slide6-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+
+        .slide6-action-card {
+            background: #f8fafc;
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .slide6-action-title {
+            font-weight: 500;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+            color: #1e293b;
+        }
+
+        .slide6-toggle-button {
+            width: 100%;
+            padding: 0.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            background: #e2e8f0;
+            color: #64748b;
+        }
+
+        .slide6-toggle-button.active {
+            background: #2563eb;
+            color: white;
+        }
+
+        .slide6-slider-container {
+            background: #f8fafc;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .slide6-slider-group {
+            margin-bottom: 0.75rem;
+        }
+
+        .slide6-slider-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .slide6-slider-value {
+            font-weight: 600;
+            color: #2563eb;
+        }
+
+        .slide6-calculation-impact {
+            font-size: 0.85rem;
+height: 1rem;
+            margin-top: 0.5rem;
+            color: #64748b;
+        }
+
+        .slide6-deficit-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            text-align: center;
+            margin: 0.5rem 0;
+        }
+
+
+        /* Animations */
+        @keyframes slide_one_fadeInSlideDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slide_one_fadeInSlideUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slide_one_fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slide_one_float {
+            0%, 100% {
+                transform: translate(0, 0);
+            }
+            50% {
+                transform: translate(0, 15px);
+            }
+        }
+
+        /* Media Queries */
+
+ @media (max-width: 1000px) {
+            .slide5-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .slide5-chart-wrapper {
+                height: 275px;
+            }
+
+.slide6-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .slide6-chart-wrapper {
+                height: 275px;
+            }
+}
+        @media (max-width: 1024px) {
+            .slide2-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .slide2-chart-container {
+                height: 275px;
+            }
+            .slide3-model-stages {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-controls {
+                bottom: 10px;
+                padding: 8px 15px;
+            }
+
+            .nav-button {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+
+            .slide-indicator {
+                font-size: 12px;
+                padding: 0 10px;
+            }
+
+            .slide2-container {
+                padding: 1rem;
+            }
+
+            .slide2-title h1 {
+                font-size: 1.5rem;
+            }
+
+            .slide2-title h2 {
+                font-size: 1rem;
+            }
+
+            .slide2-card {
+                padding: 1rem;
+            }
+
+            .slide2-chart-container {
+                height: 250px;
+            }
+
+            .slide_one_main_title {
+                font-size: 2.5rem;
+            }
+            
+            .slide_one_subtitle {
+                font-size: 1.5rem;
+            }
+            
+            .slide_one_logo {
+                width: 90px;
+            }
+            
+            .slide_one_decoration_1,
+            .slide_one_decoration_2 {
+                width: 300px;
+                height: 300px;
+            }
+            .slide3-slide {
+                padding: 1rem;
+            }
+
+            .slide3-title h1 {
+                font-size: 1.4rem;
+            }
+
+            .slide3-title h2 {
+                font-size: 0.9rem;
+            }
+
+            .slide3-stage-card {
+                padding: 1rem;
+            }
+.slide4-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .slide4-title h1 {
+                font-size: 1.8rem;
+            }
+
+            .slide4-title h2 {
+                font-size: 1.2rem;
+            }
+
+            .slide4-container {
+                padding: 1rem;
+            }
+.slide5-container {
+                padding: 1rem;
+            }
+
+            .slide5-title h1 {
+                font-size: 1.5rem;
+            }
+
+            .slide5-title h2 {
+                font-size: 1rem;
+            }
+
+            .slide5-card {
+                padding: 1rem;
+            }
+.slide6-container {
+                padding: 1rem;
+            }
+
+            .slide6-title h1 {
+                font-size: 1.5rem;
+            }
+
+            .slide6-title h2 {
+                font-size: 1rem;
+            }
+
+            .slide6-card {
+                padding: 1rem;
+            }
+       
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <!-- Slide 1: Opening -->
+        <div class="slide active" id="slide1">
+            <div class="slide_one_body">
+                <div class="slide_one_decoration slide_one_decoration_1"></div>
+                <div class="slide_one_decoration slide_one_decoration_2"></div>
+                <div class="slide_one_content_wrapper">
+                    <div class="slide_one_logo_container">
+                        <img src="https://www.gov.il/BlobFolder/office/capital_market_authority/he/logo.png" 
+                             alt="רשות שוק ההון" 
+                             class="slide_one_logo"
+                             loading="eager">
+                    </div>
+                    <div class="slide_one_text_content">
+                        <h1 class="slide_one_main_title">מתווה לאסדרת ביטוחי הסיעוד</h1>
+                        <h2 class="slide_one_subtitle">ניתוח פיננסי</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Current State -->
+        <div class="slide" id="slide2">
+            <div class="slide2-body">
+                <div class="slide2-container">
+                    <div class="slide2-title">
+                        <h1>מצב קיים - ביטוח סיעודי בקופות החולים</h1>
+                        <h2>ניתוח נתונים ומגמות מרכזיות</h2>
+                    </div>
+
+                    <div class="slide2-grid">
+                        <div class="slide2-card">
+                            <h3>
+                                <span>התפלגות מבוטחים בין הקופות</span>
+                                <small style="color: #64748b; font-size: 0.875rem;">(4.9 מיליון מבוטחים)</small>
+                            </h3>
+                            <div class="slide2-chart-container">
+                                <canvas id="slide2InsuranceDistributionChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="slide2-card">
+                            <h3>
+                                <span>יתרות בקרנות הביטוח</span>
+                                <small style="color: #64748b; font-size: 0.875rem;">(במיליארדי ₪)</small>
+                            </h3>
+                            <div class="slide2-chart-container">
+                                <canvas id="slide2FundsBalanceChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="slide2-grid">
+                        <div class="slide2-card">
+                            <h3>התפלגות גילאים</h3>
+                            <div class="slide2-chart-container">
+                                <canvas id="slide2AgeDistributionChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="slide2-card">
+                            <h3>אחוז תובעים פעילים לפי שנת תביעה</h3>
+                            <div class="slide2-chart-container">
+                                <canvas id="slide2ClaimDurationChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="slide2-grid">
+                        <div class="slide2-card" style="grid-column: span 2;">
+                            <h3>התפלגות תביעות לפי גילאים</h3>
+                            <div class="slide2-chart-container">
+                                <canvas id="slide2ClaimsByAgeChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+<!-- Fund Development Dialogs -->
+<div id="slide2-clalit-dialog" class="slide2-dialog-overlay">
+   <div class="slide2-dialog-content">
+       <div class="slide2-dialog-title">התפתחות קרן <strong>כללית</strong> לאורך השנים</div>
+       <div class="slide2-dialog-description">
+       </div>
+       <div class="slide2-chart-container">
+           <canvas id="slide2-clalitTrendChart"></canvas>
+       </div>
+       <button class="slide2-dialog-close" onclick="closeSlide2Dialog('clalit')">✕</button>
+   </div>
+</div>
+<div id="slide2-maccabi-dialog" class="slide2-dialog-overlay">
+   <div class="slide2-dialog-content">
+       <div class="slide2-dialog-title">התפתחות קרן <strong>מכבי</strong> לאורך השנים</div>
+       <div class="slide2-dialog-description">
+       </div>
+       <div class="slide2-chart-container">
+           <canvas id="slide2-maccabiTrendChart"></canvas>
+       </div>
+       <button class="slide2-dialog-close" onclick="closeSlide2Dialog('maccabi')">✕</button>
+   </div>
+</div>
+<div id="slide2-meuhedet-dialog" class="slide2-dialog-overlay">
+   <div class="slide2-dialog-content">
+       <div class="slide2-dialog-title">התפתחות קרן <strong>מאוחדת</strong> לאורך השנים</div>
+       <div class="slide2-dialog-description">
+       </div>
+       <div class="slide2-chart-container">
+           <canvas id="slide2-meuhedetTrendChart"></canvas>
+       </div>
+       <button class="slide2-dialog-close" onclick="closeSlide2Dialog('meuhedet')">✕</button>
+   </div>
+</div>
+<div id="slide2-leumit-dialog" class="slide2-dialog-overlay">
+   <div class="slide2-dialog-content">
+       <div class="slide2-dialog-title">התפתחות קרן <strong>לאומית</strong> לאורך השנים</div>
+       <div class="slide2-dialog-description">
+       </div>
+       <div class="slide2-chart-container">
+           <canvas id="slide2-leumitTrendChart"></canvas>
+       </div>
+       <button class="slide2-dialog-close" onclick="closeSlide2Dialog('leumit')">✕</button>
+   </div>
+</div>
+                <!-- שקף 3-->
+                <div class="slide" id="slide3">
+                    <div class="slide3-body">
+                        <!-- תוכן שקף 3 מהקובץ השני -->
+                        <div class="slide3-slide">
+                            <div class="slide3-title">
+                                <h1>מודל חדש - שילוב חיסכון וביטוח סיעודי</h1>
+                <h2>פתרון ארוך טווח למערכת הביטוח הסיעודי בישראל</h2>
+                            </div>
+                
+                            <div class="slide3-model-stages">
+                                <div class="slide3-stage-card slide3-savings">
+                                    <h3>שלב ראשון - חיסכון (עד גיל 70)</h3>
+                                    <ul class="slide3-feature-list">
+                                        <li><strong>חיסכון אישי</strong> בפוליסת חיסכון פרטית בפרמיות קבועות או משתנות</li>
+                                        <li><strong>ניהול השקעות</strong> מסלול המותאם לגיל ולסיכון</li>
+                                        <li><strong>דמי ניהול:</strong> 0.2% מהצבירה</li>
+                                        <li>
+                                            <strong>יעדי חיסכון:</strong>
+                                            <div class="slide3-savings-goals">
+                                                <div class="slide3-savings-goal-item">
+                                                    <span class="slide3-savings-goal-label">גברים:</span>
+                                                    <span class="slide3-savings-goal-amount">80,000 ₪</span>
+                                                </div>
+                                                <div class="slide3-savings-goal-item slide3-women">
+                                                    <span class="slide3-savings-goal-label">נשים:</span>
+                                                    <span class="slide3-savings-goal-amount">100,000 ₪</span>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li><strong>תשואה שנתית חזויה:</strong> <span class="slide3-tooltip-trigger" data-tooltip="לפי נתוני רשות שוק ההון במסלול כללי">4%</span></li>
+                                        <li><strong>גיל הצטרפות מקסימלי:</strong><span class="slide3-dialog-trigger" onclick="openSlide3Age55Dialog()">55</span></li>
+                                    </ul>
+                                </div>
+                <div class="slide3-stage-card slide3-insurance">
+                                    <h3>שלב שני - ביטוח סיעודי (מגיל 70)</h3>
+                                    <ul class="slide3-feature-list">
+                                        <li><strong>המרה אוטומטית</strong> לפרמיה חד-פעמית בגיל <span class="slide3-dialog-trigger" onclick="openSlide3AgeDialog()">70</span></li>
+					<li><strong>ללא חיתום נוסף</strong> במעבר בין השלבים</li>
+                                        <li><strong>כיסוי מקיף</strong> לכל החיים</li>
+                                        <li><strong>תגמול חודשי:</strong> <span class="slide3-tooltip-trigger" data-tooltip="זהה לתגמולים בביטוח סיעודי קבוצתי בקופות החולים כיום, מתואם למקדם המרה שיתקבע בגיל 70">5,000 ₪</span></li>
+                                        <li><strong>תקופת תשלום:</strong> <span class="slide3-tooltip-trigger" data-tooltip="זהה לביטוח סיעודי קבוצתי בקופות החולים, כאשר בפועל משך התביעה הממוצע עומד על 38 חודשים">עד 60 חודשים</span></li>
+                                        <li><strong>תשואה שנתית חזויה:</strong> <span class="slide3-tooltip-trigger slide3-long" data-tooltip="ריבית חסרת סיכון לטווח ארוך">2.5%</span></li>                   
+                                    </ul>
+                                </div>
+                            </div>
+                
+                            <div class="slide3-guarantees">
+                                <h3>הבטחות מובנות במוצר</h3>
+                                <div class="slide3-guarantee-grid">
+                                    <div class="slide3-guarantee-item">
+                                        <h4>הבטחת מוות ללא תביעה</h4>
+                                        <p>30,000 ₪ במקרה פטירה ללא מצב סיעודי</p>
+                                    </div>
+                                    <div class="slide3-guarantee-item">
+                                        <h4>הבטחת תשלום מינימלי</h4>
+                                        <p>12 חודשי תשלום במקרה פטירה תוך כדי קבלת תגמולים</p>
+                                    </div>
+                                    <div class="slide3-guarantee-item">
+                                        <h4>החזר חיסכון</h4>
+                                        <p>החזר יתרה צבורה במקרה פטירה/סיעוד לפני גיל 70</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                <!-- דיאלוג גיל המעבר -->
+    <div id="slide3-ageDialog" class="slide3-dialog-overlay" onclick="closeSlide3AgeDialog(event)">
+        <div class="slide3-dialog-content">
+            <div class="slide3-dialog-title">חישוב גיל המעבר - 70</div>
+            <div class="slide3-dialog-description">
+                התרשים מציג את שיעורי השרידות באוכלוסיית המבוטחים מגיל 0 עד 100 (הקו הכחול). 
+                הקו האדום מסמן את רף ה-85%, המייצג את שיעור ההישרדות בגיל 70. כ-85% מהאוכלוסייה 
+                מגיעים לגיל 70 ללא כניסה למצב סיעודי, נתון המהווה בסיס לקביעת גיל זה כנקודת המעבר מחיסכון לביטוח.
+            </div>
+            <div class="slide3-dialog-chart">
+                <canvas id="slide3-survivalChart"></canvas>
+            </div>
+            <div class="slide3-dialog-description">
+                ניתן לראות כי לאחר גיל 70 מתחילה ירידה משמעותית בשיעורי השרידות, המצביעה על העלייה 
+                בסיכון הסיעודי ומחזקת את ההיגיון בקביעת נקודת מעבר זו.
+            </div>
+            <button class="slide3-dialog-close" onclick="closeSlide3AgeDialog()">✕</button>
+        </div>
+    </div>
+
+    <!-- דיאלוג גיל 55 -->
+    <div id="slide3-age55Dialog" class="slide3-dialog-overlay" onclick="closeSlide3Age55Dialog(event)">
+        <div class="slide3-dialog-content">
+            <div class="slide3-dialog-title">הגבלת גיל ההצטרפות למוצר</div>
+            <div class="slide3-dialog-description">
+                המודל החדש מגביל את גיל ההצטרפות המקסימלי ל-55 שנים, וזאת משלושה טעמים עיקריים:
+            </div>
+            
+            <div class="slide3-dialog-description">
+                <ol>
+                    <li>מניעת אנטי-סלקציה - הגבלת הגיל מצמצמת את האפשרות להצטרפות סלקטיבית של אוכלוסייה מבוגרת בעלת סיכון מוגבר.</li>
+                    <li>היתכנות כלכלית - צבירת החיסכון הנדרש בפרק זמן קצר מחייבת הפקדות חודשיות גבוהות במיוחד, כפי שמודגם בטבלה הבאה:</li>
+                    <div class="slide3-dialog-table">
+                        <table class="slide3-premium-table">
+                            <thead>
+                                <tr>
+                                    <th>גיל ההצטרפות</th>
+                                    <th>גבר</th>
+                                    <th>אישה</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>55</td>
+                                    <td>₪ 370</td>
+                                    <td>₪ 470</td>
+                                </tr>
+                                <tr>
+                                    <td>60</td>
+                                    <td>₪ 600</td>
+                                    <td>₪ 750</td>
+                                </tr>
+                                <tr>
+                                    <td>65</td>
+                                    <td>₪ 1200</td>
+                                    <td>₪ 1600</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <li>תמחור הוגן - גיל 55 נבחר גם בשל היותו נקודת מפנה משמעותית במודל הקיים של הביטוח הקבוצתי בקופות החולים. במודל הנוכחי, מבוטחים עד גיל 55 משלמים פרמיות הגבוהות מהסיכון האקטוארי שלהם כדי לסבסד את עלויות המבוטחים המבוגרים יותר. </li>
+                </ol>
+            </div>
+            <div class="slide3-dialog-chart">
+                <canvas id="slide3-premiumChart"></canvas>
+            </div>
+            <div class="slide3-dialog-description">
+           התרשים מציג את תשלומי התביעות ביחס לפרמיות המתקבלות מאוכלוסיית בני 55 ומעלה. 
+            </div>
+            <button class="slide3-dialog-close" onclick="closeSlide3Age55Dialog()">✕</button>
+        </div>
+    </div>
+
+        <!-- Slide 4: Savings Target -->
+<div class="slide" id="slide4">
+	<div class="slide4-body">
+		<div class="slide4-container">
+			<div class="slide4-title">
+				<h1>חישוב יעד החיסכון</h1>
+				<h2>מודל אקטוארי לקביעת סכומי החיסכון</h2>
+			</div>
+        	<div class="slide4-grid">
+            		<div class="slide4-card">
+                		<h3>יעד חיסכון - גברים</h3>
+                			<div class="slide4-target-value">₪80,000</div>
+                <ul class="slide4-parameters-list">
+                    <li>
+                        <span>תוחלת חיים לבן 70:</span>
+                        <span>86 שנים</span>
+                    </li>
+                    <li>
+                        <span>תוחלת תביעה:</span>
+                        <span>36 חודשים</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="slide4-card">
+                <h3>יעד חיסכון - נשים</h3>
+                <div class="slide4-target-value">₪100,000</div>
+                <ul class="slide4-parameters-list">
+                    <li>
+                        <span>תוחלת חיים לבת 70:</span>
+                        <span>88 שנים</span>
+                    </li>
+                    <li>
+                        <span>תוחלת תביעה:</span>
+                        <span>40 חודשים</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="slide4-formula-section">
+            <h3>נוסחאות המודל האקטוארי</h3>
+            
+            <div class="slide4-formula-card" onclick="slide4ToggleFormula(this, 'survival')">
+                <div class="slide4-formula-header">חישוב שיעורי שרידות</div>
+                <div class="slide4-formula-container">
+                    <div class="slide4-formula-number">(1)</div>
+                    <div class="slide4-formula">
+                        \[{Surv}_{x} = {Surv}_{x-1} \times (1 - q_{x-1}) \times (1 - q_{x-1}^{m})\]
+                    </div>
+                </div>
+                <div class="slide4-formula-explanation">
+                    נוסחה זו מחשבת את שיעורי השרידות של מבוטחים פעילים בגיל x, בהתחשב בשיעורי התמותה ושיעורי התחלואה
+                </div>
+                <div class="slide4-parameters">
+                    <div class="slide4-parameters-title">פרמטרים:</div>
+                    <div class="slide4-parameter-item">
+                        <span class="slide4-parameter-symbol">Surv<sub>x</sub></span>
+                        <span class="slide4-parameter-description">שיעורי שרידות של מבוטחים פעילים (לא בתביעה)</span>
+                    </div>
+                    <div class="slide4-parameter-item">
+                        <span class="slide4-parameter-symbol">q<sub>x</sub></span>
+                        <span class="slide4-parameter-description">שיעורי תמותת פעילים בסיעוד (בריאים שטרם תבעו סיעוד)</span>
+                    </div>
+                    <div class="slide4-parameter-item">
+                        <span class="slide4-parameter-symbol">q<sup>m</sup><sub>x</sub></span>
+                        <span class="slide4-parameter-description">שיעורי תחלואה (כניסה למצב סיעודי)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide4-formula-card" onclick="slide4ToggleFormula(this, 'ltc')">
+                <div class="slide4-formula-header">חישוב תשלומי ביטוח סיעודי</div>
+                <div class="slide4-formula-container">
+                    <div class="slide4-formula-number">(2)</div>
+                    <div class="slide4-formula">
+                        \[LTC\ Payments = 5,000 \times 12 \times \sum_{x=70}^{100} q_{x}^{m} \times CCF_{x} \times {Surv}_{x} \times (\frac{1}{1+i})^{x-70}\]
+                    </div>
+                </div>
+                <div class="slide4-formula-explanation">
+                    נוסחה זו מחשבת את הערך הנוכחי של תשלומי הביטוח הסיעודי הצפויים, בהתחשב בהסתברויות התחלואה ובשיעורי השרידות
+                </div>
+                <div class="slide4-parameters">
+                    <div class="slide4-parameters-title">פרמטרים:</div>
+                    <div class="slide4-parameter-item">
+                        <span class="slide4-parameter-symbol">CCF<sub>x</sub></span>
+                        <span class="slide4-parameter-description">תוחלת משך תביעה ממוצעת</span>
+                    </div>
+                    <div class="slide4-parameter-item">
+                        <span class="slide4-parameter-symbol">i</span>
+                        <span class="slide4-parameter-description">ריבית היוון (2.5%)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide4-formula-card" onclick="slide4ToggleFormula(this, 'death')">
+                <div class="slide4-formula-header">חישוב תשלום במקרה מוות</div>
+                <div class="slide4-formula-container">
+                    <div class="slide4-formula-number">(3)</div>
+                    <div class="slide4-formula">
+                        \[Death\ Payment = 30,000 \times \sum_{x=70}^{100} q_{x} \times CCF_{x} \times {Surv}_{x} \times (\frac{1}{1+i})^{x-70}\]
+                    </div>
+                </div>
+                <div class="slide4-formula-explanation">
+                   נוסחה זו מחשבת את הערך הנוכחי של תשלומי הביטוח במקרה מוות, בהתחשב בהסתברויות התמותה ובשיעורי השרידות
+               </div>
+               <div class="slide4-parameters">
+                   <div class="slide4-parameters-title">פרמטרים נוספים:</div>
+                   <div class="slide4-parameter-item">
+                       <span class="slide4-parameter-symbol">30,000</span>
+                       <span class="slide4-parameter-description">סכום הביטוח במקרה מוות (₪)</span>
+                   </div>
+               </div>
+           </div>
+       </div>
+
+       <div class="slide4-note-section">
+           <h3>הערות</h3>
+           <ul>
+               <li>החישובים מבוססים על לוחות תמותה ותחלואה מעודכנים</li>
+               <li>הפרמטרים מחושבים בנפרד לגברים ונשים</li>
+               <li>הפרמטרים מתעדכנים בהתאם לניסיון בפועל</li>
+           </ul>
+       </div>
+   </div>
+
+            </div>
+        </div>
+
+<!-- Slide 5: Premium Calculator -->
+<div class="slide" id="slide5">
+    <div class="slide5-body">
+        <div class="slide5-container">
+        <div class="slide5-title">
+            <h1>מחשבון פרמיות</h1>
+            <h2>השוואת פרמיות בין המודל החדש לקופות החולים</h2>
+        </div>
+
+        <div class="slide5-grid">
+            <div class="slide5-card slide5-controls">
+                <div class="slide5-control-group">
+                    <label>גיל הצטרפות:</label>
+                    <input type="range" id="slide5AgeInput" class="slide5-range" min="20" max="55" step="5" value="30"/>
+                    <div class="slide5-age-display" id="slide5AgeDisplay">30</div>
+                </div>
+
+                <div class="slide5-control-group">
+                    <label>מגדר:</label>
+                    <div class="slide5-gender-buttons">
+                        <button class="slide5-gender-button active" id="slide5MaleBtn">גבר</button>
+                        <button class="slide5-gender-button" id="slide5FemaleBtn">אישה</button>
+                    </div>
+                </div>
+
+                <div class="slide5-summary-box">
+                    <h3>סיכום תשלומים</h3>
+                    <div class="slide5-summary-item">
+                        <span>פרמיה התחלתית - קבועה:</span>
+                        <span id="slide5FixedModelInitial">₪0</span>
+                    </div>
+                    <div class="slide5-summary-item">
+                        <span>פרמיה התחלתית - משתנה:</span>
+                        <span id="slide5NewModelInitial">₪0</span>
+                    </div>
+                    <div class="slide5-summary-item">
+                        <span>פרמיה התחלתית - קופות חולים:</span>
+                        <span id="slide5KupotInitial">₪0</span>
+                    </div>
+                    <div class="slide5-summary-item">
+                        <span>סך תשלום - פרמיה קבועה:</span>
+                        <span id="slide5FixedModelTotal">₪0</span>
+                    </div>
+                    <div class="slide5-summary-item">
+                        <span>סך תשלום - פרמיה משתנה:</span>
+                        <span id="slide5NewModelTotal">₪0</span>
+                    </div>
+                    <div class="slide5-summary-item">
+                        <span>סך תשלום - קופות חולים:</span>
+                        <span id="slide5KupotTotal">₪0</span>
+                    </div>
+                </div>
+
+                <div class="slide5-note">
+                    <strong>הערה:</strong> בעוד שהפרמיות בקופות החולים הן תשלום עבור הביטוח בלבד, במודל החדש הפרמיות נצברות כחיסכון אישי לטובת המבוטח
+                </div>
+            </div>
+
+            <div class="slide5-card slide5-charts-container">
+                <div class="slide5-chart-wrapper">
+                    <div class="slide5-chart-title">פרמיה חודשית</div>
+                    <canvas id="slide5MonthlyChart"></canvas>
+                </div>
+                <div class="slide5-chart-wrapper">
+                    <div class="slide5-chart-title">פרמיות מצטברות</div>
+                    <canvas id="slide5CumulativeChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+
+<!-- Slide 6: Deficit Analysis -->
+<div class="slide" id="slide6">
+    <div class="slide6-body">
+          <div class="slide6-container">
+        <div class="slide6-title">
+            <h1>ניתוח גירעון באוכלוסיית בני 55 ומעלה</h1>
+            <h2>חלוקה לקופות וסימולטור</h2>
+        </div>
+
+        <div class="slide6-grid">
+            <div class="slide6-card slide6-controls">
+                <h3 class="slide6-chart-title">סימולטור טיפול בגירעון</h3>
+
+                <div class="slide6-slider-container">
+                    <div class="slide6-slider-group">
+                        <div class="slide6-slider-label">
+                            <span>העלאת פרמיות</span>
+                            <div class="slide6-slider-value">
+                                <span id="slide6PremiumValue">0</span>%
+                            </div>
+                        </div>
+                        <input type="range" id="slide6PremiumSlider" class="slide6-range" min="0" max="20" value="0" step="1">
+                        <div class="slide6-calculation-impact" id="slide6PremiumImpact"></div>
+                    </div>
+
+                    <div class="slide6-slider-group">
+                        <div class="slide6-slider-label">
+                            <span>הקטנת תביעות</span>
+                            <div class="slide6-slider-value">
+                                <span id="slide6ClaimsValue">0</span>%
+                            </div>
+                        </div>
+                        <input type="range" id="slide6ClaimsSlider" class="slide6-range" min="0" max="20" value="0" step="1">
+                        <div class="slide6-calculation-impact" id="slide6ClaimsImpact"></div>
+                    </div>
+
+                    <div class="slide6-slider-group">
+                        <div class="slide6-slider-label">
+                            <span>תקופת המתנה</span>
+                            <div class="slide6-slider-value">
+                                <span id="slide6WaitingValue">ללא שינוי</span>
+                            </div>
+                        </div>
+                        <input type="range" id="slide6WaitingSlider" class="slide6-range" min="0" max="3" value="0" step="1">
+                        <div class="slide6-calculation-impact" id="slide6WaitingImpact"></div>
+                    </div>
+
+                    <div class="slide6-slider-group">
+                        <div class="slide6-slider-label">
+                            <span>קיצור תקופת זכאות</span>
+                            <div class="slide6-slider-value">
+                                <span id="slide6EligibilityValue">ללא שינוי</span>
+                            </div>
+                        </div>
+                        <input type="range" id="slide6EligibilitySlider" class="slide6-range" min="0" max="1" value="0" step="1">
+                        <div class="slide6-calculation-impact" id="slide6EligibilityImpact"></div>
+                    </div>
+
+                    <div class="slide6-slider-group">
+                        <div class="slide6-slider-label">
+                            <span>יתרת קרן קיימת</span>
+                            <div class="slide6-slider-value">
+                                <span id="slide6FundValue">0</span> מיליארד ₪
+                            </div>
+                        </div>
+                        <input type="range" id="slide6FundSlider" class="slide6-range" min="0" max="8" value="0" step="1">
+                        <div class="slide6-calculation-impact" id="slide6FundImpact"></div>
+                    </div>
+                </div>
+
+                <div class="slide6-summary-box">
+                    <h3>גירעון צפוי לאחר הפעולות</h3>
+                    <div class="slide6-deficit-value" id="slide6ProjectedDeficit">16 מיליארד ₪</div>
+                </div>
+            </div>
+
+            <!-- Charts section remains unchanged -->
+            <div class="slide6-card slide6-charts-container">
+                <div class="slide6-chart-wrapper">
+                    <div class="slide6-chart-title">ניתוח גירעון לפי קופות חולים</div>
+                    <canvas id="slide6DeficitChart"></canvas>
+                </div>
+                <div class="slide6-chart-wrapper">
+                    <div class="slide6-chart-title">סך הכל גירעון במערכת</div>
+                    <canvas id="slide6TotalDeficitChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+        </div>
+  
+</div>
+
+</div>
+    <!-- Navigation Controls -->
+<div class="nav-controls">
+    <button class="nav-button" id="nextSlide" onclick="changeSlide(1)"></button>
+    <div class="slide-indicator">שקף&nbsp;<span id="currentSlide">1</span>&nbsp;מתוך&nbsp;<span id="totalSlides">6</span></div>
+    <button class="nav-button" id="prevSlide" onclick="changeSlide(-1)" disabled></button>
+</div>
+    <script>
+        let currentSlideIndex = 1;
+        const totalSlides = 6;
+
+        // Initialize slide 1 animations
+document.addEventListener('DOMContentLoaded', function() {
+    const slides = document.querySelectorAll('.slide');
+// יצירת אלמנט הלוגו הנייד
+const slideLogo = document.createElement('img');
+slideLogo.src = 'https://www.gov.il/BlobFolder/office/capital_market_authority/he/logo.png';
+slideLogo.classList.add('slide-logo');
+slideLogo.alt = 'רשות שוק ההון';
+slideLogo.style.opacity = '0';  // הוספנו שורה זו
+document.body.appendChild(slideLogo);
+    
+    // נאתחל את כל השקפים למצב התחלתי
+    slides.forEach((slide, index) => {
+        slide.style.transform = index === 0 ? 
+            'translateX(0)' : 'translateX(100%)';
+        slide.style.display = index === 0 ? 'block' : 'none';
+        slide.style.opacity = index === 0 ? '1' : '0';
+    });
+    
+    // אתחול כפתורי ניווט
+    updateNav();
+    
+    // אתחול ניווט מקלדת
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowRight') {
+            changeSlide(-1);
+        } else if (e.key === 'ArrowLeft') {
+            changeSlide(1);
+        }
+    });
+});
+
+        function restartAnimations() {
+            const elements = document.querySelectorAll('.slide_one_logo_container, .slide_one_text_content, .slide_one_main_title, .slide_one_subtitle');
+            elements.forEach(element => {
+                element.style.animation = 'none';
+                element.offsetHeight;
+                element.style.animation = null;
+            });
+        }
+
+        function updateNav() {
+            document.getElementById('currentSlide').textContent = currentSlideIndex;
+            document.getElementById('prevSlide').disabled = currentSlideIndex === 1;
+            document.getElementById('nextSlide').disabled = currentSlideIndex === totalSlides;
+        }
+function changeSlide(direction) {
+
+    // Force overflow-x: hidden on body and html
+    document.body.style.overflowX = 'hidden';
+
+    const slides = document.querySelectorAll('.slide');
+    const currentSlide = slides[currentSlideIndex - 1];
+    const nextIndex = currentSlideIndex + direction;
+    const slideLogo = document.querySelector('.slide-logo');
+    
+    if (nextIndex < 1 || nextIndex > totalSlides) return;
+    
+    const nextSlide = slides[nextIndex - 1];
+    
+    // הסרת כל המצבים הקודמים
+    slides.forEach(slide => {
+        slide.style.display = 'none';
+        slide.classList.remove('active', 'prev', 'next');
+    });
+    
+    // הגדרת התחלתית
+    currentSlide.style.display = 'block';
+    nextSlide.style.display = 'block';
+    
+    // הגדרת מיקום התחלתי (הפוך בגלל RTL)
+    if (direction > 0) {
+        nextSlide.style.transform = 'translateX(-100%)';
+        currentSlide.style.transform = 'translateX(0)';
+    } else {
+        nextSlide.style.transform = 'translateX(100%)';
+        currentSlide.style.transform = 'translateX(0)';
+    }
+
+    if (currentSlideIndex === 0) {
+        slideLogo.style.display = 'none';
+    }
+    if (currentSlideIndex > 0) {
+        slideLogo.style.display = 'block';
+    }
+    
+    // מאלצים reflow
+    void nextSlide.offsetWidth;
+    
+    // מפעילים אנימציה
+    requestAnimationFrame(() => {
+        currentSlide.style.transition = 'all 0.5s ease-in-out';
+        nextSlide.style.transition = 'all 0.5s ease-in-out';
+        
+        if (direction > 0) {
+            currentSlide.style.transform = 'translateX(100%)';
+        } else {
+            currentSlide.style.transform = 'translateX(-100%)';
+        }
+        nextSlide.style.transform = 'translateX(0)';
+        nextSlide.style.opacity = '1';
+        currentSlide.style.opacity = '0';
+        nextSlide.classList.add('active');
+    });
+    
+    // עדכון אינדקס
+    currentSlideIndex = nextIndex;
+    updateNav();
+    
+    // הפעלת פונקציות ספציפיות
+    if (currentSlideIndex === 2) {
+        setTimeout(initSlide2Charts, 500);
+    } else if (currentSlideIndex === 4) {
+        setTimeout(() => {
+            slide4AnimateNumbers();
+            if (window.MathJax) {
+                MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+            }
+        }, 500);
+    } else if (currentSlideIndex === 5) {
+        setTimeout(() => {
+            if (typeof slide5CreateCharts === 'function') {
+                slide5CreateCharts();
+                slide5UpdateCharts();
+            }
+        }, 500);
+    } else if (currentSlideIndex === 6) {
+        setTimeout(() => {
+            if (typeof slide6CreateDeficitChart === 'function') {
+                slide6CreateDeficitChart();
+                slide6CreateTotalDeficitChart();
+            }
+        }, 500);
+    }
+    
+    // ניקוי בסוף האנימציה
+    setTimeout(() => {
+        currentSlide.style.display = 'none';
+        currentSlide.style.transition = 'none';
+        nextSlide.style.transition = 'none';
+    }, 500);
+}
+
+        // Chart Plugins
+        const slide2LastChartPlugin = {
+            id: 'slide2LastChartAnnotation',
+            afterDraw: (chart) => {
+                if (chart.canvas.id !== 'slide2ClaimsByAgeChart') return;
+                
+                const {ctx} = chart;
+                const meta = chart.getDatasetMeta(0);
+                const bar1 = meta.data[3];
+                const bar2 = meta.data[5];
+                
+                const centerX = (bar1.x + bar2.x) / 2 + 160;
+                const y = Math.min(bar1.y, bar2.y) - 20;
+                
+                ctx.save();
+                
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#1e293b';
+                ctx.font = 'regular 14px system-ui';
+                ctx.fillText('85% מסך התביעות', centerX, y - 15);
+                
+                ctx.beginPath();
+                ctx.strokeStyle = '#64748b';
+                ctx.lineWidth = 1.5;
+                ctx.setLineDash([3, 3]);
+                
+                ctx.moveTo(bar1.x, bar1.y);
+                ctx.lineTo(bar1.x, y - 5);
+                ctx.moveTo(bar2.x, bar2.y);
+                ctx.lineTo(bar2.x, y - 5);
+                ctx.moveTo(bar1.x, y - 5);
+                ctx.lineTo(bar2.x, y - 5);
+                
+                ctx.stroke();
+                ctx.restore();
+            }
+        };
+
+        const slide2ChartPlugin2 = {
+            id: 'slide2LastChartAnnotation2',
+            afterDraw: (chart) => {
+                if (chart.canvas.id !== 'slide2AgeDistributionChart') return;
+                
+                const {ctx} = chart;
+                const meta = chart.getDatasetMeta(0);
+                const bar1 = meta.data[5];
+                const bar2 = meta.data[9];
+                
+                const centerX = (bar1.x + bar2.x) / 2;
+                const y = Math.min(bar1.y, bar2.y) - 20;
+                
+                ctx.save();
+                
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#1e293b';
+                ctx.font = 'regular 14px system-ui';
+                ctx.fillText('סך הכל 1.2 מיליון מבוטחים', centerX, y - 0);
+                
+                ctx.beginPath();
+                ctx.strokeStyle = '#64748b';
+                ctx.lineWidth = 1.5;
+                ctx.setLineDash([3, 3]);
+                
+                ctx.moveTo(bar1.x, bar1.y);
+                ctx.lineTo(bar1.x, y + 10);
+                ctx.moveTo(bar2.x, bar2.y);
+                ctx.lineTo(bar2.x, y + 10);
+                ctx.moveTo(bar1.x, y + 10);
+                ctx.lineTo(bar2.x, y + 10);
+                
+                ctx.stroke();
+                ctx.restore();
+            }
+        };
+
+function openSlide2Dialog(fund) {
+    document.getElementById(`slide2-${fund}-dialog`).style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+
+    const trendData = {
+        clalit: [2, 2, 2, 0.7, 0, 1],
+        maccabi: [3.5, 5, 6, 5, 6, 6.5],
+        meuhedet: [0, 0.1, 0.15, 0.2, 0.25, 0.4],
+        leumit: [0.4, 0.4, 0.35, 0.3, 0.3, 0.3]
+    };
+
+    createSlide2TrendChart(`slide2-${fund}TrendChart`, trendData[fund]);
+}
+
+function closeSlide2Dialog(fund) {
+    document.getElementById(`slide2-${fund}-dialog`).style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+function createSlide2TrendChart(canvasId, data) {
+    return new Chart(document.getElementById(canvasId), {
+        type: 'line',
+        data: {
+            labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
+            datasets: [{
+                label: 'יתרות בקרן (מיליארדי ₪)',
+                data: data,
+                borderColor: '#3b82f6',
+                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: '#ffffff',
+                pointBorderColor: '#3b82f6',
+                pointBorderWidth: 2,
+                pointRadius: 4,
+                pointHoverRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: '#e2e8f0'
+                    },
+                    ticks: {
+                        callback: function(value) {
+                            return value;
+                        }
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
+}
+
+        let slide3SurvivalChart;
+
+function openSlide3AgeDialog() {
+    const dialog = document.getElementById('slide3-ageDialog');
+    dialog.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    
+    if (!slide3SurvivalChart) {
+        const ctx = document.getElementById('slide3-survivalChart').getContext('2d');
+        const labels = Array.from({length: 11}, (_, i) => i * 10);
+        
+        const survivalData = labels.map(age => {
+
+            if (age === 50) {
+                return 93 ;
+            }
+
+            if (age === 60) {
+                return 90.5 ;
+            }
+
+            if (age <= 70 ) {
+                const x = age / 70;
+                const decay = x * x;
+                return 100 - (15 * decay);
+            } else {
+                const baseDecay = 1.3;
+                const acceleratedDecay = (age - 70) * 0.05;
+                return Math.max(85 - ((age - 70) * (baseDecay + acceleratedDecay)), 0);
+            }
+
+        });
+
+        const pctLine = Array(11).fill(85);
+
+        slide3SurvivalChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'שרידות',
+                    data: survivalData,
+                    borderColor: '#3b82f6',
+                    borderWidth: 2.5,
+                    tension: 0.4,
+                    fill: false,
+                    pointRadius: 0,
+                    pointHoverRadius: 0
+                }, {
+                    label: 'רף קריטי',
+                    data: pctLine,
+                    borderColor: 'rgba(239, 68, 68, 0.6)',
+                    borderWidth: 1.5,
+                    tension: 0,
+                    fill: false,
+                    borderDash: [4, 4],
+                    pointRadius: 0,
+                    pointHoverRadius: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        align: 'center',
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: 'line',
+                            padding: 20,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        enabled: true,
+                        mode: 'index',
+                        intersect: false,
+                        backgroundColor: 'rgba(0,0,0,0.7)',
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.parsed.y.toFixed(1) + '%';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)',
+                            drawBorder: false
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            },
+                            stepSize: 10,
+                            font: {
+                                size: 11
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            stepSize: 10,
+                            font: {
+                                size: 11
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'גיל',
+                            font: {
+                                size: 12
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+}
+
+function closeSlide3AgeDialog(event) {
+    if (event && event.target.className !== 'slide3-dialog-overlay') return;
+    const dialog = document.getElementById('slide3-ageDialog');
+    dialog.style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+function openSlide3Age55Dialog() {
+    const dialog = document.getElementById('slide3-age55Dialog');
+    dialog.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    createSlide3PremiumChart();
+}
+
+function closeSlide3Age55Dialog(event) {
+    if (event && event.target.className !== 'slide3-dialog-overlay') return;
+    const dialog = document.getElementById('slide3-age55Dialog');
+    dialog.style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+function createSlide3PremiumChart() {
+    const ctx = document.getElementById('slide3-premiumChart').getContext('2d');
+    
+    const years = ['2024', '2029', '2034', '2039', '2044', '2049', '2054', '2059', '2064'];
+    const existingModel = [1600, 1700, 1630, 1330, 920, 470, 150, 20, 1];
+    const newModel = [1600, 1200, 880, 540, 270, 100, 30, 3, 0];
+    
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: years,
+            datasets: [
+                {
+                    label: 'תביעות שישולמו',
+                    data: existingModel,
+                    borderColor: '#94a3b8',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: false,
+                    pointRadius: 0,
+                    pointHoverRadius: 0
+                },
+                {
+                    label: 'פרמיות שיתקבלו',
+                    data: newModel,
+                    borderColor: '#0ea5e9',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: false,
+                    pointRadius: 0,
+                    pointHoverRadius: 0
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    align: 'center',
+                    labels: {
+                        usePointStyle: true,
+                        pointStyle: 'line',
+                        padding: 20,
+                        font: {
+                            size: 12
+                        }
+                    }
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    backgroundColor: 'rgba(0,0,0,0.7)',
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': ' + context.parsed.y.toLocaleString();
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0,0,0,0.05)',
+                        drawBorder: false
+                    },
+                    ticks: {
+                        font: {
+                            size: 11
+                        },
+                        callback: function(value) {
+                            return value.toLocaleString();
+                        }
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        font: {
+                            size: 11
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+        // Register chart plugins
+        Chart.register(slide2LastChartPlugin);
+        Chart.register(slide2ChartPlugin2);
+
+        function initSlide2Charts() {
+            // קודם כל נמחק את כל הגרפים הקיימים
+            Chart.helpers.each(Chart.instances, function(instance) {
+                instance.destroy();
+            });
+
+            const colors = {
+                blue: ['#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe'],
+                green: ['#22c55e', '#4ade80', '#86efac', '#bbf7d0'],
+                red: ['#ef4444', '#f87171', '#fca5a5', '#fecaca'],
+                orange: ['#f97316', '#fb923c', '#fdba74', '#fed7aa']
+            };
+
+            // תרשים התפלגות מבוטחים
+            const distributionChart = new Chart(document.getElementById('slide2InsuranceDistributionChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['כללית', 'מכבי', 'מאוחדת', 'לאומית'],
+                    datasets: [{
+                        data: [2621811, 1608966, 457892, 292400
+                        ],
+                        backgroundColor: colors.blue,
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                padding: 15,
+                                font: { size: 12 },
+                                generateLabels: function(chart) {
+                                    const data = chart.data;
+                                    const total = data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                    return data.labels.map((label, i) => ({
+                                        text: `${label} - ${Math.round(data.datasets[0].data[i]/total*100)}%`,
+                                        fillStyle: data.datasets[0].backgroundColor[i],
+                                        strokeStyle: data.datasets[0].backgroundColor[i],
+                                        lineWidth: 0,
+                                        hidden: false,
+                                        index: i
+                                    }));
+                                }
+                            }
+                        }
+                    },
+                    cutout: '60%',
+                    animation: {
+                        animateRotate: true,
+                        animateScale: true,
+                        easing: 'easeInOutQuart'
+                    }
+                }
+            });
+
+            // תרשים יתרות בקרנות
+            const balanceChart = new Chart(document.getElementById('slide2FundsBalanceChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['כללית', 'מכבי', 'מאוחדת', 'לאומית'],
+                    datasets: [{
+                        label: 'יתרה בקרן',
+                        data: [1, 6.5, 0.4, 0.3],
+                        backgroundColor: colors.green,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+    onClick: (event, elements) => {
+        if (elements.length > 0) {
+            const index = elements[0].index;
+            const funds = ['clalit', 'maccabi', 'meuhedet', 'leumit'];
+            openSlide2Dialog(funds[index]);
+        }
+    },
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#e2e8f0'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value ;
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    animation: {
+                        y: {
+                            duration: 1500,
+                            easing: 'easeOutBounce',
+                            from: (ctx) => {
+                                if (ctx.type === 'data') {
+                                    return 0;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+          // תרשים התפלגות גילאים
+const ageChart = new Chart(document.getElementById('slide2AgeDistributionChart'), {
+    type: 'bar',
+    data: {
+        labels: ['0-9', '10-19', '20-29', '30-39', '40-49', '50-59', '60-69', '70-79', '80-89', '90+'],
+        datasets: [{
+            label: 'אחוז מבוטחים', // שונה ל"אחוז מבוטחים"
+            data: [24, 19, 12, 10, 9, 8, 7, 6, 2, 0.3], // הנתונים החדשים באחוזים
+            backgroundColor: Array(5).fill(colors.red[2]).concat(Array(5).fill(colors.red[0])),
+            borderRadius: 8
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                grid: {
+                    color: '#e2e8f0'
+                },
+                ticks: {
+                    callback: function(value) {
+                        return value + '%'; // הוספת סימן אחוז
+                    }
+                }
+            },
+            x: {
+                grid: {
+                    display: false
+                }
+            }
+        },
+        animation: {
+            y: {
+                duration: 1500,
+                easing: 'easeInOutQuart',
+                from: (ctx) => {
+                    if (ctx.type === 'data') {
+                        return 0;
+                    }
+                },
+                delay: (ctx) => ctx.dataIndex * 100
+            }
+        }
+    }
+});
+           // תרשים משך תביעה
+const claimDurationChart = new Chart(document.getElementById('slide2ClaimDurationChart'), {
+    type: 'line',
+    data: {
+        labels: ['מעל שנה', 'מעל שנתיים', 'מעל 3 שנים', 'מעל 4 שנים', 'מעל 5 שנים'],
+        datasets: [{
+            label: 'אחוז מהתביעות',
+            data: [75, 60, 50, 40, 30],
+            borderColor: colors.orange[1],
+            backgroundColor: 'rgba(249, 115, 22, 0.1)',
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: '#ffffff',
+            pointBorderColor: colors.orange[1],
+            pointBorderWidth: 2,
+            pointRadius: 4,
+            borderDash: [5, 5]
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                grid: {
+                    color: '#e2e8f0'
+                },
+                ticks: {
+                    callback: function(value) {
+                        return value + '%';
+                    }
+                }
+            },
+            x: {
+                grid: {
+                    display: false
+                }
+            }
+        },
+        animation: {
+            duration: 1500,
+            easing: 'easeInOutQuart'
+        }
+    }
+});
+
+            // תרשים תביעות לפי גילאים
+            const claimsByAgeChart = new Chart(document.getElementById('slide2ClaimsByAgeChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['0-49', '50-59', '60-69', '70-79', '80-89', '90+'],
+                    datasets: [{
+                        label: 'אחוז תביעות',
+                        data: [3.5, 2.5, 10, 30, 40, 14],
+                        backgroundColor: function(context) {
+                const value = context.raw;
+                if (value <= 5) return colors.orange[3];      // Lightest
+                if (value <= 15) return colors.orange[2];     // Light
+                if (value <= 30) return colors.orange[1];     // Medium
+                return colors.orange[0]; 
+                        },borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#e2e8f0'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    animation: {
+                        y: {
+                            duration: 1500,
+                            easing: 'easeInOutQuart',
+                            from: (ctx) => {
+                                if (ctx.type === 'data') {
+                                    return 0;
+                                }
+                            },
+                            delay: (ctx) => ctx.dataIndex * 150
+                        }
+                    }
+                }
+            });
+}
+
+function slide4AnimateNumbers() {
+    document.querySelectorAll('.slide4-target-value').forEach(value => {
+        const finalValue = parseInt(value.textContent.replace(/[^\d]/g, ''));
+        let currentValue = 0;
+        const duration = 1500;
+        const steps = 60;
+        const increment = finalValue / steps;
+        
+        function updateValue(step) {
+            if (step <= steps) {
+                currentValue += increment;
+                value.textContent = '₪' + Math.round(currentValue).toLocaleString();
+                requestAnimationFrame(() => updateValue(step + 1));
+            } else {
+                value.textContent = '₪' + finalValue.toLocaleString();
+            }
+        }
+        
+        updateValue(1);
+    });
+}
+
+function slide4ToggleFormula(element, id) {
+    if (element.classList.contains('active')) {
+        element.classList.remove('active');
+    } else {
+        document.querySelectorAll('.slide4-formula-card').forEach(card => {
+            card.classList.remove('active');
+        });
+        element.classList.add('active');
+    }
+
+}
+
+       const slide5MalePremiums = {
+            20: {20: 16, 25: 20, 30: 26, 35: 33, 40: 42, 45: 54, 50: 69, 55: 88, 60: 112, 65: 143, 70: 174},
+            25: {25: 22, 30: 28, 35: 36, 40: 46, 45: 58, 50: 75, 55: 95, 60: 122, 65: 155, 70: 189},
+            30: {30: 31, 35: 39, 40: 50, 45: 64, 50: 82, 55: 104, 60: 133, 65: 170, 70: 207},
+            35: {35: 44, 40: 56, 45: 71, 50: 91, 55: 116, 60: 148, 65: 189, 70: 230},
+            40: {40: 63, 45: 81, 50: 103, 55: 132, 60: 168, 65: 215, 70: 261},
+            45: {45: 95, 50: 121, 55: 154, 60: 197, 65: 251, 70: 305},
+            50: {50: 147, 55: 187, 60: 239, 65: 305, 70: 371},
+            55: {55: 243, 60: 310, 65: 396, 70: 481}
+        };
+
+        const slide5FemalePremiums = {
+            20: {20: 20, 25: 26, 30: 33, 35: 41, 40: 53, 45: 68, 50: 86, 55: 110, 60: 140, 65: 179, 70: 218},
+            25: {25: 28, 30: 37, 35: 45, 40: 57, 45: 73, 50: 93, 55: 119, 60: 152, 65: 194, 70: 236},
+            30: {30: 39, 35: 49, 40: 63, 45: 80, 50: 102, 55: 131, 60: 167, 65: 213, 70: 258},
+            35: {35: 55, 40: 70, 45: 89, 50: 114, 55: 145, 60: 185, 65: 237, 70: 288},
+            40: {40: 79, 45: 101, 50: 129, 55: 165, 60: 210, 65: 269, 70: 327},
+            45: {45: 118, 50: 151, 55: 193, 60: 246, 65: 314, 70: 381},
+            50: {50: 184, 55: 234, 60: 299, 65: 382, 70: 464},
+            55: {55: 304, 60: 388, 65: 495, 70: 601}
+        };
+
+        const slide5FixedPremiums = {
+            male: {
+                20: 46,
+                25: 58,
+                30: 74,
+                35: 94,
+                40: 123,
+                45: 164,
+                50: 229,
+                55: 338
+            },
+            female: {
+                20: 58,
+                25: 73,
+                30: 92,
+                35: 118,
+                40: 154,
+                45: 206,
+                50: 286,
+                55: 422
+            }
+        };
+
+        const slide5KupotPremiums = {
+            20: 12,
+            25: 19,
+            30: 40,
+            35: 63,
+            40: 81,
+            45: 147,
+            50: 203,
+            55: 255,
+            60: 301,
+            65: 353,
+            70: 390,
+            75: 412,
+            80: 412,
+            85: 412
+        };
+
+        const slide5Colors = {
+            model1: {
+                primary: '#22c55e',
+                secondary: '#4ade80',
+                background: 'rgba(34, 197, 94, 0.1)'
+            },
+            model2: {
+                primary: '#3b82f6',
+                secondary: '#60a5fa',
+                background: 'rgba(59, 130, 246, 0.1)'
+            },
+            kupot: {
+                primary: '#f97316',
+                secondary: '#fb923c',
+                background: 'rgba(249, 115, 22, 0.1)'
+            }
+        };
+
+        Chart.defaults.font.family = 'system-ui, -apple-system, sans-serif';
+        Chart.defaults.font.size = 12;
+        Chart.defaults.color = '#64748b';
+
+        const slide5CommonOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        padding: 12,
+                        usePointStyle: true,
+                        font: {
+                            size: 12,
+                            weight: '500'
+                        }
+                    }
+                }
+            },
+            animation: {
+                duration: 2000,
+                easing: 'easeInOutQuart'
+            }
+        };
+
+
+let slide5MonthlyChart, slide5CumulativeChart;
+        let slide5CurrentGender = 'male';
+        let slide5CurrentAge = 30;
+
+        function slide5CreateCharts() {
+            const monthlyCtx = document.getElementById('slide5MonthlyChart').getContext('2d');
+            const cumulativeCtx = document.getElementById('slide5CumulativeChart').getContext('2d');
+
+            slide5MonthlyChart = new Chart(monthlyCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: 'מודל חדש - פרמיה קבועה',
+                            data: [],
+                            borderColor: slide5Colors.model1.primary,
+                            backgroundColor: slide5Colors.model1.background,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
+                            borderWidth: 2.5,
+                            pointBackgroundColor: '#ffffff',
+                            pointBorderColor: slide5Colors.model1.primary,
+                            pointBorderWidth: 2
+                        },
+                        {
+                            label: 'מודל חדש - פרמיה משתנה',
+                            data: [],
+                            borderColor: slide5Colors.model2.primary,
+                            backgroundColor: slide5Colors.model2.background,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
+                            borderWidth: 2.5,
+                            pointBackgroundColor: '#ffffff',
+                            pointBorderColor: slide5Colors.model2.primary,
+                            pointBorderWidth: 2
+                        },
+                        {
+                            label: 'קופות חולים',
+                            data: [],
+                            borderColor: slide5Colors.kupot.primary,
+                            backgroundColor: slide5Colors.kupot.background,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
+                            borderWidth: 2.5,
+                            pointBackgroundColor: '#ffffff',
+                            pointBorderColor: slide5Colors.kupot.primary,
+                            pointBorderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                padding: 12,
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'פרמיה חודשית (₪)'
+                            },
+                            ticks: {
+                                stepSize: 100
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'גיל'
+                            }
+                        }
+                    }
+                }
+            });
+
+slide5CumulativeChart = new Chart(cumulativeCtx, {
+    type: 'bar',
+    plugins: [{
+        beforeDraw: function(chart) {
+            chart.data.datasets[0].borderRadius = 8;
+            chart.data.datasets[0].borderSkipped = false;
+        }
+    }],
+    data: {
+        labels: ['מודל חדש - קבועה', 'מודל חדש - משתנה', 'קופות חולים'],
+        datasets: [{
+            data: [0, 0, 0],
+            backgroundColor: [
+                slide5Colors.model1.primary,
+                slide5Colors.model2.primary,
+                slide5Colors.kupot.primary
+            ],
+            borderColor: '#ffffff',
+            borderWidth: 2,
+            borderRadius: 7,
+            borderSkipped: false,
+            barThickness: 90
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            x: {
+                grid: {
+                    display: false
+                }
+            },
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'סך תשלומים (₪)'
+                },
+                ticks: {
+                    callback: function(value) {
+                        return new Intl.NumberFormat('he-IL').format(value) + ' ₪';
+                    },
+                    stepSize: 50000
+                }
+            }
+        }
+    }
+});
+        }
+
+        function slide5UpdateCharts() {
+            const premiumsData = slide5CurrentGender === 'male' ? slide5MalePremiums : slide5FemalePremiums;
+            const fixedPremium = slide5FixedPremiums[slide5CurrentGender][slide5CurrentAge];
+            const monthlyData = [];
+            let newModelCumulative = 0;
+            let fixedModelCumulative = 0;
+            let kupotCumulative = 0;
+
+            for (let age = slide5CurrentAge; age <= 85; age += 5) {
+                let newModelMonthly = null;
+                let fixedModelMonthly = null;
+                const kupotMonthly = slide5KupotPremiums[age] || slide5KupotPremiums[Math.floor(age/5)*5];
+
+                if (age <= 70) {
+                    newModelMonthly = premiumsData[slide5CurrentAge] && premiumsData[slide5CurrentAge][age] ? premiumsData[slide5CurrentAge][age] : null;
+                    fixedModelMonthly = fixedPremium;
+                    
+                    if (newModelMonthly) {
+                        newModelCumulative += newModelMonthly * 12 * 5;
+                    }
+                    if (fixedModelMonthly) {
+                        fixedModelCumulative += fixedModelMonthly * 12 * 5;
+                    }
+                }
+                
+                kupotCumulative += kupotMonthly * 12 * 5;
+
+                monthlyData.push({
+                    age: age,
+                    newModel: newModelMonthly,
+                    fixed: fixedModelMonthly,
+                    kupot: kupotMonthly
+                });
+            }
+
+            slide5MonthlyChart.data.labels = monthlyData.map(d => d.age);
+            slide5MonthlyChart.data.datasets[0].data = monthlyData.map(d => d.fixed);
+            slide5MonthlyChart.data.datasets[1].data = monthlyData.map(d => d.newModel);
+            slide5MonthlyChart.data.datasets[2].data = monthlyData.map(d => d.kupot);
+            slide5MonthlyChart.update();
+
+            slide5CumulativeChart.data.datasets[0].data = [fixedModelCumulative, newModelCumulative, kupotCumulative];
+            slide5CumulativeChart.update();
+
+            document.getElementById('slide5FixedModelInitial').textContent = `₪${fixedPremium}`;
+            document.getElementById('slide5NewModelInitial').textContent = `₪${monthlyData[0].newModel}`;
+            document.getElementById('slide5KupotInitial').textContent = `₪${monthlyData[0].kupot}`;
+            document.getElementById('slide5NewModelTotal').textContent = `₪${newModelCumulative.toLocaleString()}`;
+            document.getElementById('slide5FixedModelTotal').textContent = `₪${fixedModelCumulative.toLocaleString()}`;
+            document.getElementById('slide5KupotTotal').textContent = `₪${kupotCumulative.toLocaleString()}`;
+        }
+
+        window.addEventListener('load', () => {
+            slide5CreateCharts();
+            slide5UpdateCharts();
+
+            document.getElementById('slide5AgeInput').addEventListener('input', (e) => {
+                slide5CurrentAge = parseInt(e.target.value);
+                document.getElementById('slide5AgeDisplay').textContent = slide5CurrentAge;
+                slide5UpdateCharts();
+            });
+
+            document.getElementById('slide5MaleBtn').addEventListener('click', () => {
+                slide5CurrentGender = 'male';
+                document.getElementById('slide5MaleBtn').classList.add('active');
+                document.getElementById('slide5FemaleBtn').classList.remove('active');
+                slide5UpdateCharts();
+            });
+
+            document.getElementById('slide5FemaleBtn').addEventListener('click', () => {
+                slide5CurrentGender = 'female';
+                document.getElementById('slide5FemaleBtn').classList.add('active');
+                document.getElementById('slide5MaleBtn').classList.remove('active');
+                slide5UpdateCharts();
+            });
+
+        });
+let slide6DeficitChart, slide6TotalDeficitChart;
+
+        let slide6State = {
+            basePremiums: 45,
+            baseClaims: -56,
+            baseExpenses: -5,
+            premiumChange: 0,
+            claimsChange: 0,
+            fundValue: 0,
+            waitingPeriod: 0,
+            eligibilityPeriod: 0
+        };
+
+        const waitingPeriodValues = {
+    0: { text: 'ללא שינוי', impact: 0 },
+    1: { text: 'חצי שנה', impact: 10 },    // שינוי ל-10%
+    2: { text: '9 חודשים', impact: 15 },   // שינוי ל-15%
+    3: { text: 'שנה', impact: 20 }         // שינוי ל-20%
+};
+
+const eligibilityPeriodValues = {
+    0: { text: 'ללא שינוי', impact: 0 },
+    1: { text: 'קיצור ל-4 שנים', impact: 10 }  // שינוי ל-10%
+};
+
+
+ function slide6CalculateTotalDeficit() {
+    // חישוב פרמיות עם העלאה באחוזים
+    let currentPremiums = slide6State.basePremiums * (1 + slide6State.premiumChange / 100);
+    
+    // חישוב הפחתת תביעות כולל
+    let claimsReductionPercent = 0;
+    
+    // הוספת השפעת תקופת המתנה (באחוזים)
+    claimsReductionPercent += waitingPeriodValues[slide6State.waitingPeriod].impact;
+    
+    // הוספת השפעת קיצור תקופת זכאות (באחוזים)
+    claimsReductionPercent += eligibilityPeriodValues[slide6State.eligibilityPeriod].impact;
+    
+    // הוספת הפחתת תביעות ידנית
+    claimsReductionPercent -= slide6State.claimsChange;
+    
+    // חישוב ערך תביעות סופי
+    let currentClaims = slide6State.baseClaims * (1 - claimsReductionPercent / 100);
+
+    return {
+        premiums: currentPremiums,
+        claimsAndExpenses: currentClaims + slide6State.baseExpenses,
+        fundValue: slide6State.fundValue,
+        total: currentPremiums + currentClaims + slide6State.baseExpenses + slide6State.fundValue
+    };
+}
+
+function slide6CalculateTotalDeficit() {
+    // חישוב פרמיות עם העלאה באחוזים
+    let currentPremiums = slide6State.basePremiums * (1 + slide6State.premiumChange / 100);
+    
+    // חישוב תביעות - מתחילים מהבסיס
+    let currentClaims = slide6State.baseClaims;
+    
+    // הפחתת תביעות ידנית
+    currentClaims *= (1 - slide6State.claimsChange / 100);
+    
+    // הפחתה בגין תקופת המתנה
+    currentClaims *= (1 - waitingPeriodValues[slide6State.waitingPeriod].impact / 100);
+    
+    // הפחתה בגין קיצור תקופת זכאות
+    currentClaims *= (1 - eligibilityPeriodValues[slide6State.eligibilityPeriod].impact / 100);
+
+    return {
+        premiums: currentPremiums,
+        claimsAndExpenses: currentClaims + slide6State.baseExpenses,
+        fundValue: slide6State.fundValue,
+        total: currentPremiums + currentClaims + slide6State.baseExpenses + slide6State.fundValue
+    };
+}
+
+function slide6UpdateImpacts() {
+    const premiumImpact = document.getElementById('slide6PremiumImpact');
+    const claimsImpact = document.getElementById('slide6ClaimsImpact');
+    const waitingImpact = document.getElementById('slide6WaitingImpact');
+    const eligibilityImpact = document.getElementById('slide6EligibilityImpact');
+    const fundImpact = document.getElementById('slide6FundImpact');
+
+    // חישוב הבסיס הנוכחי לאחר כל שינוי קודם
+    let currentClaims = slide6State.baseClaims;
+    
+    // חישוב השפעת פרמיות
+    const premiumChange = (slide6State.basePremiums * slide6State.premiumChange / 100).toFixed(1);
+    
+    // חישוב השפעת הקטנת תביעות
+    const claimsChange = (currentClaims * slide6State.claimsChange / 100).toFixed(1);
+    currentClaims *= (1 - slide6State.claimsChange / 100);
+    
+    // חישוב השפעת תקופת המתנה
+    const waitingChange = (currentClaims * waitingPeriodValues[slide6State.waitingPeriod].impact / 100).toFixed(1);
+    currentClaims *= (1 - waitingPeriodValues[slide6State.waitingPeriod].impact / 100);
+    
+    // חישוב השפעת קיצור תקופת זכאות
+    const eligibilityChange = (currentClaims * eligibilityPeriodValues[slide6State.eligibilityPeriod].impact / 100).toFixed(1);
+
+    // הצגת ההשפעות
+    premiumImpact.textContent = `השפעה: +${Math.abs(premiumChange)} מיליארד ₪`;
+    claimsImpact.textContent = `השפעה: +${Math.abs(claimsChange)} מיליארד ₪`;
+    waitingImpact.textContent = `השפעה: +${Math.abs(waitingChange)} מיליארד ₪`;
+    eligibilityImpact.textContent = `השפעה: +${Math.abs(eligibilityChange)} מיליארד ₪`;
+    fundImpact.textContent = `השפעה: +${slide6State.fundValue} מיליארד ₪`;
+}
+
+function slide6CreateDeficitChart() {
+   const ctx = document.getElementById('slide6DeficitChart');
+   
+   slide6DeficitChart = new Chart(ctx, {
+       type: 'bar',
+       data: {
+           labels: ['כללית', 'מכבי', 'לאומית', 'מאוחדת'],
+           datasets: [{
+               label: 'פרמיות',
+               data: [23, 16, 2, 4],
+               backgroundColor: '#22c55e',
+               borderRadius: 8,
+               borderSkipped: false
+           }, {
+               label: 'תביעות והוצאות',
+               data: [-32, -21, -3, -5],
+               backgroundColor: '#fb923c',
+               borderRadius: 8,
+               borderSkipped: false
+           }, {
+               label: 'גירעון',
+               data: [-9, -5, -1, -1],
+               backgroundColor: '#ef4444',
+               borderRadius: 8,
+               borderSkipped: false
+           }]
+       },
+       options: {
+           responsive: true,
+           maintainAspectRatio: false,
+           plugins: {
+               legend: {
+                   position: 'top',
+                   labels: {
+                       padding: 12,
+                       font: {
+                           size: 12,
+                           weight: '500'
+                       },
+                       usePointStyle: true
+                   }
+               }
+           },
+           scales: {
+               y: {
+                   title: {
+                       display: true,
+                       text: 'מיליארדי ₪'
+                   },
+                   grid: {
+                       color: function(context) {
+                           if (context.tick.value === 0) {
+                               return '#94a3b8';  // קו אפס כהה יותר
+                           }
+                           return 'rgba(0, 0, 0, 0.1)';
+                       }
+                   }
+               },
+               x: {
+                   grid: {
+                       display: false
+                   }
+               }
+           }
+       }
+   });
+}
+
+function slide6CreateTotalDeficitChart() {
+   const ctx = document.getElementById('slide6TotalDeficitChart');
+   
+      slide6TotalDeficitChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: [''],
+            datasets: [{
+                label: 'יתרת קרן קיימת',        // העברנו למיקום ראשון
+                data: [0],
+                backgroundColor: '#60a5fa',
+                borderRadius: 8,
+                borderSkipped: false
+            }, {
+                label: 'סה"כ פרמיות',
+                data: [45],
+                backgroundColor: '#22c55e',
+                borderRadius: 8,
+                borderSkipped: false
+            }, {
+                label: 'סה"כ תביעות והוצאות',
+                data: [-61],
+                backgroundColor: '#fb923c',
+                borderRadius: 8,
+                borderSkipped: false
+            }, {
+                label: 'גירעון כולל',
+                data: [-16],
+                backgroundColor: '#ef4444',
+                borderRadius: 8,
+                borderSkipped: false
+            }]
+        },
+       options: {
+           responsive: true,
+           maintainAspectRatio: false,
+           plugins: {
+               legend: {
+                   position: 'top',
+                   labels: {
+                       padding: 12,
+                       font: {
+                           size: 12,
+                           weight: '500'
+                       },
+                       usePointStyle: true
+                   }
+               }
+           },
+           scales: {
+               y: {
+                   title: {
+                       display: true,
+                       text: 'מיליארדי ₪'
+                   },
+                   min: -65,
+                   max: 65,
+                   grid: {
+                       color: function(context) {
+                           if (context.tick.value === 0) {
+                               return '#94a3b8';  // קו אפס כהה יותר
+                           }
+                           return 'rgba(0, 0, 0, 0.1)';
+                       }
+                   },
+                   ticks: {
+                       stepSize: 20
+                   }
+               },
+               x: {
+                   grid: {
+                       display: false
+                   }
+               }
+           }
+       }
+   });
+}
+
+function slide6UpdateCharts() {
+    const results = slide6CalculateTotalDeficit();
+    
+    // עדכון הנתונים לפי הסדר החדש
+    slide6TotalDeficitChart.data.datasets[0].data = [results.fundValue];     // קרן קיימת
+    slide6TotalDeficitChart.data.datasets[1].data = [results.premiums];      // פרמיות
+    slide6TotalDeficitChart.data.datasets[2].data = [results.claimsAndExpenses]; // תביעות
+    slide6TotalDeficitChart.data.datasets[3].data = [results.total];         // גירעון/עודף כולל
+    
+    // עדכון צבע וכותרת לפי התוצאה
+    slide6TotalDeficitChart.data.datasets[3].backgroundColor = results.total >= 0 ? '#15803d' : '#ef4444';
+    slide6TotalDeficitChart.data.datasets[3].label = results.total >= 0 ? 'עודף כולל' : 'גירעון כולל';
+    
+    slide6TotalDeficitChart.update();
+    
+    // עדכון הטקסט המוצג
+    const summaryTitle = document.querySelector('.slide6-summary-box h3');
+    const deficitElement = document.getElementById('slide6ProjectedDeficit');
+    
+    if (results.total >= 0) {
+        summaryTitle.textContent = 'עודף צפוי לאחר הפעולות';
+        deficitElement.textContent = results.total.toFixed(1) + ' מיליארד ₪';
+        deficitElement.style.color = '#15803d';
+    } else {
+        summaryTitle.textContent = 'גירעון צפוי לאחר הפעולות';
+        deficitElement.textContent = Math.abs(results.total).toFixed(1) + ' מיליארד ₪';
+        deficitElement.style.color = '#ef4444';
+    }
+    
+    slide6UpdateImpacts();
+}
+
+        window.addEventListener('load', () => {
+            slide6CreateDeficitChart();
+            slide6CreateTotalDeficitChart();
+
+            document.getElementById('slide6PremiumSlider').addEventListener('input', (e) => {
+                slide6State.premiumChange = Number(e.target.value);
+                document.getElementById('slide6PremiumValue').textContent = e.target.value;
+                slide6UpdateCharts();
+            });
+
+            document.getElementById('slide6ClaimsSlider').addEventListener('input', (e) => {
+                slide6State.claimsChange = Number(e.target.value);
+                document.getElementById('slide6ClaimsValue').textContent = e.target.value;
+                slide6UpdateCharts();
+            });
+
+            document.getElementById('slide6WaitingSlider').addEventListener('input', (e) => {
+                slide6State.waitingPeriod = Number(e.target.value);
+                document.getElementById('slide6WaitingValue').textContent = waitingPeriodValues[e.target.value].text;
+                slide6UpdateCharts();
+            });
+
+            document.getElementById('slide6FundSlider').addEventListener('input', (e) => {
+                slide6State.fundValue = Number(e.target.value);
+                document.getElementById('slide6FundValue').textContent = e.target.value;
+                slide6UpdateCharts();
+            });
+
+            document.getElementById('slide6EligibilitySlider').addEventListener('input', (e) => {
+                slide6State.eligibilityPeriod = Number(e.target.value);
+                document.getElementById('slide6EligibilityValue').textContent = eligibilityPeriodValues[e.target.value].text;
+                slide6UpdateCharts();
+            });
+        });
+
+// מחיקת לוגו צד בשקף ראשון
+document.addEventListener('DOMContentLoaded', function() {
+    setInterval(function() {
+        const currentSlideNumber = document.getElementById('currentSlide').textContent;
+        const slideLogo = document.querySelector('.slide-logo');
+        
+        if (currentSlideNumber === '1') {
+            slideLogo.style.display = 'none';
+        } else {
+            slideLogo.style.display = 'block';
+        }
+    }, 100);
+});
+
+
+    document.addEventListener("contextmenu", function(e) {
+        e.preventDefault();
+    });
+
+    document.addEventListener("keydown", function(e) {
+        if (e.ctrlKey && (e.key === "u" || e.key === "U")) { // חוסם Ctrl+U
+            e.preventDefault();
+        }
+        if (e.key === "F12") { // חוסם F12
+            e.preventDefault();
+        }
+        if (e.ctrlKey && e.shiftKey && e.key === "I") { // חוסם Ctrl+Shift+I
+            e.preventDefault();
+        }
+    });
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מחלקת ביטוח סיעודי | רשות שוק ההון, ביטוח וחיסכון</title>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* ===== VARIABLES ===== */
+        :root {
+            --primary: #103A97;
+            --primary-light: #5C83E3;
+            --primary-bright: #3b82f6;
+            --cyan: #0ea5e9;
+            --teal: #36CEC4;
+            --success: #34C759;
+            --warning: #FF9F0A;
+            --purple: #7c3aed;
+            --emerald: #059669;
+
+            --bg-body: #F4F7FB;
+            --bg-card: rgba(255, 255, 255, 0.75);
+
+            --text-primary: #1D1D1F;
+            --text-secondary: #4A5568;
+            --text-muted: #86868B;
+
+            --border: rgba(0, 0, 0, 0.07);
+            --border-light: rgba(0, 0, 0, 0.04);
+
+            --shadow-sm: 0 2px 12px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 24px rgba(0, 0, 0, 0.07);
+            --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.1);
+            --shadow-glow: 0 8px 30px rgba(16,58,151,0.12);
+
+            --radius-sm: 10px;
+            --radius-md: 14px;
+            --radius-lg: 18px;
+            --radius-xl: 24px;
+        }
+
+        /* ===== RESET ===== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #c1c9d6; border-radius: 3px; }
+        html { scrollbar-width: thin; scrollbar-color: #c1c9d6 transparent; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Heebo', sans-serif;
+            background: var(--bg-body);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ===== BACKGROUND EFFECTS ===== */
+        .bg-effects {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse at 15% -5%, rgba(16,58,151,0.08) 0%, transparent 55%),
+                radial-gradient(ellipse at 85% 95%, rgba(14,165,233,0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(92,131,227,0.03) 0%, transparent 60%);
+            background-attachment: fixed;
+        }
+
+
+        /* ===== HEADER ===== */
+        .main-header {
+            background: rgba(255, 255, 255, 0.72);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            border-bottom: 3px solid transparent;
+            border-image: linear-gradient(90deg, #103A97, #5C83E3, #0ea5e9, #5C83E3, #103A97) 1;
+            box-shadow: 0 4px 30px rgba(16, 58, 151, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .logo-img {
+            height: 50px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .logo-text { display: flex; flex-direction: column; }
+
+        .logo-title {
+            color: var(--text-primary);
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .logo-subtitle {
+            color: var(--primary-light);
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header-badge {
+            padding: 7px 16px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(16,58,151,0.12);
+            background: rgba(16,58,151,0.04);
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--primary);
+            transition: all 0.2s ease;
+        }
+
+        .badge-dot {
+            width: 7px;
+            height: 7px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+            box-shadow: 0 0 6px rgba(52,199,89,0.4);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 6px rgba(52,199,89,0.4); }
+            50% { opacity: 0.6; box-shadow: 0 0 12px rgba(52,199,89,0.2); }
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            padding: 60px 40px 30px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-logo-wrap {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 28px;
+        }
+
+        .hero-logo {
+            width: 80px;
+            height: auto;
+            display: block;
+            opacity: 0;
+            animation: logoIn 1.2s ease-out forwards;
+        }
+
+        .hero-logo-glow {
+            display: none;
+        }
+
+        @keyframes logoIn {
+            0% { opacity: 0; transform: translateY(20px) scale(0.9); }
+            60% { opacity: 0.9; transform: translateY(-4px) scale(1.02); }
+            100% { opacity: 0.85; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes glowIn {
+            to { opacity: 1; }
+        }
+
+        .hero-title {
+            font-size: clamp(1.8rem, 3vw, 2.4rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, #103A97 0%, #2563eb 40%, #0ea5e9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 14px;
+            opacity: 0;
+            animation: slideUp 0.8s ease 0.3s forwards;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 1.5vw, 1.2rem);
+            color: var(--text-secondary);
+            font-weight: 400;
+            max-width: 500px;
+            margin: 0 auto 28px;
+            opacity: 0;
+            animation: slideUp 0.8s ease 0.5s forwards;
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            opacity: 0;
+            animation: slideUp 0.6s ease 0.7s forwards;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-divider span {
+            width: 50px;
+            height: 2.5px;
+            border-radius: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+        }
+
+        .hero-divider .dot {
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: var(--primary);
+        }
+
+        /* ===== STATS BAR ===== */
+        .stats-bar {
+            max-width: 700px;
+            margin: 0 auto 10px;
+            padding: 20px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255,255,255,0.6);
+            backdrop-filter: blur(16px);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            opacity: 0;
+            animation: slideUp 0.7s ease 0.9s forwards;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-item { text-align: center; flex: 1; }
+
+        .stat-value {
+            font-size: 30px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--primary-bright));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 11.5px;
+            color: var(--text-muted);
+            font-weight: 400;
+            margin-top: 2px;
+        }
+
+        .stat-sep {
+            width: 1px;
+            height: 36px;
+            background: linear-gradient(180deg, transparent, var(--border), transparent);
+        }
+
+        /* ===== SECTION HEADERS ===== */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+            padding: 0 2px;
+        }
+
+        .section-icon {
+            width: 34px; height: 34px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+        }
+
+        .section-icon.blue { background: rgba(16,58,151,0.07); }
+        .section-icon.green { background: rgba(5,150,105,0.07); }
+
+        .section-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .section-line {
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(16,58,151,0.15), rgba(16,58,151,0.03));
+            border-radius: 1px;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            padding: 40px 40px 60px;
+            max-width: 1350px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cards-section { margin-bottom: 36px; }
+
+        .cards-grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .cards-grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        /* ===== CARD ===== */
+        .card {
+            position: relative;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 26px 24px 22px;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        /* Gradient top border on hover */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0; left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--card-c1, var(--primary)), var(--card-c2, var(--primary-light)));
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .card::after { display: none; }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg), 0 0 0 1px rgba(16,58,151,0.06);
+            border-color: rgba(16,58,151,0.1);
+            background: rgba(255, 255, 255, 0.88);
+        }
+
+        .card:hover::before { transform: scaleX(1); }
+        .card:hover::after { opacity: 1; }
+
+        /* Card inner */
+        .card-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .card-icon {
+            width: 48px; height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            background: var(--card-icon-bg, rgba(16,58,151,0.05));
+            border: 1px solid var(--card-icon-border, rgba(16,58,151,0.08));
+            transition: all 0.35s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card:hover .card-icon {
+            transform: scale(1.08) rotate(-2deg);
+            box-shadow: 0 6px 16px var(--card-glow, rgba(16,58,151,0.15));
+        }
+
+        .card-badge {
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 500;
+            background: var(--badge-bg, rgba(16,58,151,0.05));
+            color: var(--badge-color, var(--primary));
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            line-height: 1.4;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-desc {
+            font-size: 13.5px;
+            color: var(--text-secondary);
+            line-height: 1.75;
+            flex: 1;
+            margin-bottom: 14px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .ftag {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 9px;
+            border-radius: 5px;
+            font-size: 10.5px;
+            font-weight: 400;
+            background: rgba(0,0,0,0.025);
+            color: var(--text-muted);
+            border: 1px solid rgba(0,0,0,0.04);
+        }
+
+        .ftag::before {
+            content: '';
+            width: 4px; height: 4px;
+            border-radius: 50%;
+            background: var(--card-c1, var(--primary));
+            opacity: 0.5;
+        }
+
+        .card-foot {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-light);
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-foot-label {
+            font-size: 11.5px;
+            color: var(--text-muted);
+        }
+
+        .card-go {
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.03);
+            border: 1px solid var(--border-light);
+            transition: all 0.3s ease;
+            color: var(--text-muted);
+        }
+
+        .card-go svg {
+            width: 14px; height: 14px;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover .card-go {
+            background: var(--card-c1, var(--primary));
+            border-color: var(--card-c1, var(--primary));
+            color: #fff;
+            box-shadow: 0 4px 12px var(--card-glow, rgba(16,58,151,0.25));
+        }
+
+        .card:hover .card-go svg { transform: translateX(-3px); }
+
+        /* ===== COLOR THEMES ===== */
+        .card--dashboard {
+            --card-c1: #103A97; --card-c2: #5C83E3;
+            --card-glow: rgba(16,58,151,0.1);
+            --card-icon-bg: rgba(16,58,151,0.06);
+            --card-icon-border: rgba(16,58,151,0.1);
+            --badge-bg: rgba(16,58,151,0.06); --badge-color: #103A97;
+        }
+
+        .card--reform {
+            --card-c1: #2563eb; --card-c2: #0ea5e9;
+            --card-glow: rgba(37,99,235,0.1);
+            --card-icon-bg: rgba(37,99,235,0.06);
+            --card-icon-border: rgba(37,99,235,0.1);
+            --badge-bg: rgba(37,99,235,0.06); --badge-color: #2563eb;
+        }
+
+        .card--regulation {
+            --card-c1: #0ea5e9; --card-c2: #36CEC4;
+            --card-glow: rgba(14,165,233,0.1);
+            --card-icon-bg: rgba(14,165,233,0.06);
+            --card-icon-border: rgba(14,165,233,0.1);
+            --badge-bg: rgba(14,165,233,0.06); --badge-color: #0ea5e9;
+        }
+
+        .card--actuary {
+            --card-c1: #059669; --card-c2: #34d399;
+            --card-glow: rgba(5,150,105,0.1);
+            --card-icon-bg: rgba(5,150,105,0.06);
+            --card-icon-border: rgba(5,150,105,0.1);
+            --badge-bg: rgba(5,150,105,0.06); --badge-color: #059669;
+        }
+
+        .card--tasks {
+            --card-c1: #7c3aed; --card-c2: #a78bfa;
+            --card-glow: rgba(124,58,237,0.1);
+            --card-icon-bg: rgba(124,58,237,0.06);
+            --card-icon-border: rgba(124,58,237,0.1);
+            --badge-bg: rgba(124,58,237,0.06); --badge-color: #7c3aed;
+        }
+
+        /* ===== FEATURED CARD ===== */
+        .card--featured {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: 1fr 1.15fr;
+            gap: 28px;
+            padding: 30px 28px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.8), rgba(248,250,252,0.9));
+        }
+
+        .card--featured .card-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card--featured .card-preview {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .preview-frame {
+            width: 100%;
+            aspect-ratio: 16/10;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(16,58,151,0.08);
+            background: #f8fafc;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255,255,255,0.8);
+            transition: all 0.4s ease;
+        }
+
+        .card:hover .preview-frame {
+            box-shadow: var(--shadow-lg);
+            transform: scale(1.01);
+        }
+
+        .preview-iframe {
+            width: 300%;
+            height: 300%;
+            border: none;
+            transform: scale(0.3333);
+            transform-origin: top right;
+            pointer-events: none;
+        }
+
+        /* ===== GANTT MOCKUP ===== */
+        .gantt-mock {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .gantt-mock-header {
+            display: flex;
+            gap: 2px;
+            padding: 6px 8px 0;
+            background: rgba(124,58,237,0.04);
+            border-bottom: 1px solid rgba(124,58,237,0.08);
+        }
+
+        .gm-tab {
+            padding: 5px 12px;
+            font-size: 8px;
+            font-weight: 500;
+            color: var(--text-muted);
+            border-radius: 5px 5px 0 0;
+            background: transparent;
+        }
+
+        .gm-tab.active {
+            background: #fff;
+            color: var(--purple);
+            border: 1px solid rgba(124,58,237,0.1);
+            border-bottom: 1px solid #fff;
+            margin-bottom: -1px;
+        }
+
+        .gantt-mock-body {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            padding: 8px;
+            gap: 0;
+        }
+
+        .gm-labels {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            padding-left: 6px;
+            border-left: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .gm-label {
+            font-size: 6.5px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            white-space: nowrap;
+            text-align: left;
+        }
+
+        .gm-chart {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            padding: 4px 0;
+        }
+
+        .gm-grid-lines {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            justify-content: space-evenly;
+        }
+
+        .gm-grid-line {
+            width: 1px;
+            height: 100%;
+            background: rgba(0,0,0,0.04);
+        }
+
+        .gm-bar {
+            height: 8px;
+            border-radius: 3px;
+            margin-right: var(--start);
+            width: var(--width);
+            background: var(--color);
+            opacity: 0;
+            animation: ganttBarIn 0.5s ease forwards;
+            position: relative;
+            z-index: 1;
+        }
+
+        .gm-bar-1 { animation-delay: 1.0s; }
+        .gm-bar-2 { animation-delay: 1.15s; }
+        .gm-bar-3 { animation-delay: 1.3s; }
+        .gm-bar-4 { animation-delay: 1.45s; }
+        .gm-bar-5 { animation-delay: 1.6s; }
+        .gm-bar-6 { animation-delay: 1.75s; }
+
+        @keyframes ganttBarIn {
+            from { opacity: 0; width: 0; }
+            to { opacity: 1; width: var(--width); }
+        }
+
+        /* ===== PLACEHOLDER CARD ===== */
+        .card--placeholder {
+            border-style: dashed;
+            border-color: rgba(0,0,0,0.1);
+            cursor: default;
+            background: rgba(255,255,255,0.4);
+        }
+
+        .card--placeholder:hover {
+            transform: none;
+            box-shadow: none;
+            border-color: rgba(0,0,0,0.1);
+            background: rgba(255,255,255,0.4);
+        }
+
+        .card--placeholder::before,
+        .card--placeholder::after { display: none; }
+
+        .card--placeholder .card-icon { opacity: 0.35; }
+        .card--placeholder .card-title { color: var(--text-muted); font-weight: 500; }
+        .card--placeholder .card-desc { color: #b0b0b0; }
+
+        /* ===== FOOTER ===== */
+        .portal-footer {
+            padding: 18px 40px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255,255,255,0.5);
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-text {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 300;
+        }
+
+        /* ===== ENTRANCE ANIMATIONS ===== */
+        .anim {
+            opacity: 0;
+            transform: translateY(22px);
+            animation: cardIn 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+
+        @keyframes cardIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .d1 { animation-delay: 0.1s; }
+        .d2 { animation-delay: 0.15s; }
+        .d3 { animation-delay: 0.25s; }
+        .d4 { animation-delay: 0.35s; }
+        .d5 { animation-delay: 0.45s; }
+        .d6 { animation-delay: 0.55s; }
+        .d7 { animation-delay: 0.65s; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1100px) {
+            .cards-grid-3 { grid-template-columns: 1fr 1fr; }
+            .card--featured { grid-template-columns: 1fr; }
+            .card--featured .card-preview { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .main-header { padding: 12px 20px; }
+            .hero { padding: 40px 20px 20px; }
+            .main-content { padding: 24px 16px 40px; }
+            .cards-grid-3, .cards-grid-2 { grid-template-columns: 1fr; }
+            .card--featured { grid-template-columns: 1fr; }
+            .stats-bar { flex-direction: column; gap: 12px; padding: 16px 20px; }
+            .stat-sep { width: 60px; height: 1px; }
+            .portal-footer { flex-direction: column; gap: 8px; padding: 16px 20px; }
+            .header-left { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-effects"></div>
+
+    <!-- Header -->
+    <header class="main-header">
+        <div class="logo">
+            <img src="https://www.gov.il/BlobFolder/office/capital_market_authority/he/logo.png" alt="רשות שוק ההון" class="logo-img">
+            <div class="logo-text">
+                <span class="logo-title">רשות שוק ההון, ביטוח וחיסכון</span>
+                <span class="logo-subtitle">חטיבת ביטוחי בריאות וסיעוד</span>
+            </div>
+        </div>
+        <div class="header-left">
+            <div class="header-badge">
+                <span class="badge-dot"></span>
+                מחלקת ביטוח סיעודי
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+        <h1 class="hero-title">מחלקת ביטוח סיעודי</h1>
+        <p class="hero-subtitle">כלי ניהול, ניתוח ובקרה — רפורמת ביטוחי הסיעוד</p>
+        <div class="hero-divider">
+            <span></span>
+            <div class="dot"></div>
+            <span></span>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-value">5</div>
+            <div class="stat-label">מערכות פעילות</div>
+        </div>
+        <div class="stat-sep"></div>
+        <div class="stat-item">
+            <div class="stat-value">3</div>
+            <div class="stat-label">מצגות אינטראקטיביות</div>
+        </div>
+        <div class="stat-sep"></div>
+        <div class="stat-item">
+            <div class="stat-value">1</div>
+            <div class="stat-label">דשבורד בקרה</div>
+        </div>
+        <div class="stat-sep"></div>
+        <div class="stat-item">
+            <div class="stat-value">1</div>
+            <div class="stat-label">מערכת ניהול</div>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <main class="main-content">
+
+        <!-- Section 1: Dashboard -->
+        <div class="cards-section">
+            <div class="section-header anim d1">
+                <div class="section-icon blue">📊</div>
+                <h2 class="section-title">בקרה וניתוח</h2>
+                <div class="section-line"></div>
+            </div>
+
+            <div class="cards-grid-3">
+                <a href="dashboard-siud-main/index.html" class="card card--dashboard card--featured anim d2">
+                    <div class="card-content">
+                        <div class="card-head">
+                            <div class="card-icon">📊</div>
+                            <span class="card-badge">דשבורד</span>
+                        </div>
+                        <h3 class="card-title">דשבורד ביטוח סיעודי</h3>
+                        <p class="card-desc">
+                            תמונת מצב מקיפה של שוק ביטוחי הסיעוד — יתרות קרנות, מבוטחים פעילים, ניתוח תביעות, מגמות שוק ודמוגרפיה. כולל תקציר מנהלים ויכולת Drill-Down.
+                        </p>
+                        <div class="card-features">
+                            <span class="ftag">יתרות קרנות</span>
+                            <span class="ftag">ניתוח תביעות</span>
+                            <span class="ftag">דמוגרפיה</span>
+                            <span class="ftag">KPI</span>
+                            <span class="ftag">תקציר מנהלים</span>
+                        </div>
+                        <div class="card-foot">
+                            <span class="card-foot-label">עדכון אחרון: מרץ 2026</span>
+                            <div class="card-go">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-preview">
+                        <div class="preview-frame">
+                            <iframe class="preview-iframe" src="dashboard-siud-main/index.html" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Section 2: Project Management -->
+        <div class="cards-section">
+            <div class="section-header anim d3">
+                <div class="section-icon green">✅</div>
+                <h2 class="section-title">ניהול פרויקט</h2>
+                <div class="section-line"></div>
+            </div>
+
+            <div class="cards-grid-3">
+                <a href="ltc-reform-tasks-main/index.html" class="card card--tasks card--featured anim d4">
+                    <div class="card-content">
+                        <div class="card-head">
+                            <div class="card-icon">✅</div>
+                            <span class="card-badge">ניהול משימות</span>
+                        </div>
+                        <h3 class="card-title">ניהול משימות רפורמת הסיעוד</h3>
+                        <p class="card-desc">
+                            מערכת ניהול פרויקט מלאה — מעקב משימות ותת-פרויקטים, תרשימי גאנט, לוח שנה, ניהול בעלי עניין ודיווח סטטוס.
+                        </p>
+                        <div class="card-features">
+                            <span class="ftag">משימות</span>
+                            <span class="ftag">תרשים גאנט</span>
+                            <span class="ftag">לוח שנה</span>
+                            <span class="ftag">בעלי עניין</span>
+                        </div>
+                        <div class="card-foot">
+                            <span class="card-foot-label">מערכת ניהול</span>
+                            <div class="card-go">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-preview">
+                        <div class="preview-frame">
+                            <iframe class="preview-iframe" src="ltc-reform-tasks-main/index.html" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Section 3: Presentations -->
+        <div class="cards-section">
+            <div class="section-header anim d5">
+                <div class="section-icon blue">🎯</div>
+                <h2 class="section-title">מצגות אינטראקטיביות</h2>
+                <div class="section-line"></div>
+            </div>
+
+            <div class="cards-grid-3">
+                <a href="newproduct-main/index.html" class="card card--reform anim d6">
+                    <div class="card-head">
+                        <div class="card-icon">🚀</div>
+                        <span class="card-badge">חוויה אינטראקטיבית</span>
+                    </div>
+                    <h3 class="card-title">מסע הרפורמה</h3>
+                    <p class="card-desc">
+                        חוויה אינטראקטיבית של מסע הרפורמה — ציר זמן מונפש, מעקב מצב המוצר בזמן אמת, וניתוח תרחישים מהמצב הקיים ועד הפתרון.
+                    </p>
+                    <div class="card-features">
+                        <span class="ftag">ציר זמן</span>
+                        <span class="ftag">מעקב מוצר</span>
+                        <span class="ftag">תרחישים</span>
+                    </div>
+                    <div class="card-foot">
+                        <span class="card-foot-label">מצגת אינטראקטיבית</span>
+                        <div class="card-go">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="siud-main/index.html" class="card card--regulation anim d6">
+                    <div class="card-head">
+                        <div class="card-icon">📋</div>
+                        <span class="card-badge">מדיניות</span>
+                    </div>
+                    <h3 class="card-title">מתווה לאסדרת ביטוחי הסיעוד</h3>
+                    <p class="card-desc">
+                        המתווה הרגולטורי המלא — עקרונות מנחים, מודלים חלופיים, ניתוח השוואתי ותכנית יישום לאסדרת שוק ביטוחי הסיעוד.
+                    </p>
+                    <div class="card-features">
+                        <span class="ftag">רגולציה</span>
+                        <span class="ftag">מתווה</span>
+                        <span class="ftag">מודלים</span>
+                    </div>
+                    <div class="card-foot">
+                        <span class="card-foot-label">מצגת שקופיות</span>
+                        <div class="card-go">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="actuary-main/index.html" class="card card--actuary anim d7">
+                    <div class="card-head">
+                        <div class="card-icon">🔬</div>
+                        <span class="card-badge">ניתוח אקטוארי</span>
+                    </div>
+                    <h3 class="card-title">פתרון ארוך טווח</h3>
+                    <p class="card-desc">
+                        ניתוח אקטוארי מעמיק — מודלים כלכליים, תחזיות, סימולציות תרחישים וניתוח רגישות לפרמטרים של הפתרון המוצע.
+                    </p>
+                    <div class="card-features">
+                        <span class="ftag">אקטואריה</span>
+                        <span class="ftag">סימולציה</span>
+                        <span class="ftag">תחזיות</span>
+                    </div>
+                    <div class="card-foot">
+                        <span class="card-foot-label">מצגת שקופיות</span>
+                        <div class="card-go">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="portal-footer">
+        <span class="footer-text">רשות שוק ההון, ביטוח וחיסכון — מחלקת ביטוח סיעודי &copy; 2026</span>
+        <span class="footer-text" style="opacity:0.5;">גרסה 1.0</span>
+    </footer>
+
+    <script>
+        /* Spotlight effect following mouse on cards */
+        document.querySelectorAll('.card:not(.card--placeholder)').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const r = card.getBoundingClientRect();
+                card.style.setProperty('--x', (e.clientX - r.left) + 'px');
+                card.style.setProperty('--y', (e.clientY - r.top) + 'px');
+            });
+        });
+    </script>
+</body>
+</html>
